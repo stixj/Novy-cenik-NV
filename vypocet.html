@@ -4285,13 +4285,70 @@
             document.getElementById('damagedRate1_10').textContent = price1_10.toLocaleString('cs-CZ') + ' Kč bez DPH';
             document.getElementById('damagedRate11_30').textContent = price11_30.toLocaleString('cs-CZ') + ' Kč bez DPH';
 
-            // Generate models list for this category - show ALL models with same formatting as price list
+            // Generate models list for this category
+            // Pro „vozy Škoda“ zobraz pouze modely z konkrétního řádku ceníku,
+            // na kterém je vybraný poškozený model. Pro ostatní kategorie ponech
+            // původní chování – všechny řádky v dané kategorii.
             const categoryModels = cenÝkData.filter(data => data.kategorie === finalCategory);
             
-            // Combine all znacka_typ from category into one string (same format as in price list)
             let allModelsText = '';
-            if (categoryModels.length > 0) {
-                // Join all znacka_typ entries with comma
+            
+            if (finalCategory === 'vozy Škoda' && znackaPoskozene && modelPoskozene) {
+                const damagedModelLower = modelPoskozene.toLowerCase().trim();
+                
+                // Najdi konkrétní řádek „vozy Škoda“ podle stejné logiky jako pro autocomplete:
+                // - pro verze „Octavia I + II“ / „Octavia III + IV“ vyber správný řádek podle římské číslice
+                // - pro ostatní modely (Citigo, Fabia, Scala, Kamiq, …) stačí přesná shoda názvu modelu
+                const skodaRow = cenÝkData.find(data => {
+                    if (!data.kategorie || !data.kategorie.toLowerCase().includes('škoda')) return false;
+                    
+                    const znackaTyp = data.znacka_typ || '';
+                    
+                    // Nejprve zkus zachytit pattern typu „Octavia I + II“
+                    const fullVersionPattern = /^([A-Za-z\s]+)\s+([IVX]+)\s*\+\s*([IVX]+)$/i;
+                    const fullVersionMatch = znackaTyp.match(fullVersionPattern);
+                    
+                    if (fullVersionMatch) {
+                        const baseModel = fullVersionMatch[1].trim();   // např. „Octavia“
+                        const version1 = fullVersionMatch[2].trim();    // „I“
+                        const version2 = fullVersionMatch[3].trim();    // „II“
+                        
+                        const model1 = (baseModel + ' ' + version1).toLowerCase();
+                        const model2 = (baseModel + ' ' + version2).toLowerCase();
+                        
+                        // Shoda „Octavia I“ nebo „Octavia II“ přesně na tento řádek
+                        if (damagedModelLower === model1 || damagedModelLower === model2) {
+                            return true;
+                        }
+                        
+                        // Pokud by někdo zadal jen „Octavia“, přiřadíme ho na první řádek s Octavií
+                        if (damagedModelLower === baseModel.toLowerCase()) {
+                            return true;
+                        }
+                        
+                        return false;
+                    }
+                    
+                    // Ostatní řádky Škoda – např. „Fabia + Roomster“, „Scala + Kamiq + Yeti“
+                    const skodaModels = znackaTyp.split('+').map(m => m.trim()).filter(Boolean);
+                    for (const m of skodaModels) {
+                        const modelLower = m.toLowerCase();
+                        if (damagedModelLower === modelLower) {
+                            return true;
+                        }
+                    }
+                    
+                    return false;
+                });
+                
+                if (skodaRow && skodaRow.znacka_typ) {
+                    allModelsText = skodaRow.znacka_typ;
+                } else if (categoryModels.length > 0) {
+                    // Fallback – pokud by se konkrétní řádek nenašel, zobraz všechny řádky jako dříve
+                    allModelsText = categoryModels.map(item => item.znacka_typ).join(', ');
+                }
+            } else if (categoryModels.length > 0) {
+                // Ostatní kategorie – zachovat původní logiku (všechny řádky v kategorii)
                 allModelsText = categoryModels.map(item => item.znacka_typ).join(', ');
             }
             

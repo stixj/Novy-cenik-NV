@@ -162,7 +162,7 @@
             font-size: 15px;
             line-height: 1.5;
             color: #004033;
-            border-bottom: 1px solid #E6EEB8;
+            border-bottom: 1px solid #E6E9E8;
         }
 
         /* Hover */
@@ -255,28 +255,6 @@
         }
 
         .supplementary-info li::marker {
-            color: #C4DE00;
-        }
-
-        /* 7️⃣ Footer */
-        .footer {
-            background: linear-gradient(180deg, #004033 0%, #00382E 100%);
-            color: #FFFFFF;
-            text-align: center;
-            padding: 40px 20px;
-            font-size: 13px;
-            letter-spacing: 0.1px;
-        }
-        .footer strong {
-            color: #C4DE00;
-            font-weight: 600;
-        }
-        .footer a {
-            color: #FFFFFF;
-            text-decoration: none;
-            transition: 0.2s ease;
-        }
-        .footer a:hover {
             color: #C4DE00;
         }
 
@@ -428,19 +406,9 @@
         .main-content {
             max-width: 1400px;
             margin: 0 auto;
-            background-color: #F6FBEA;
+            background-color: transparent;
             padding: 80px 40px;
-            padding-bottom: 0;
             box-shadow: none;
-        }
-        
-        /* Smooth transition from main content to footer */
-        .main-content::after {
-            content: '';
-            display: block;
-            height: 100px;
-            background: linear-gradient(180deg, #F5F9CC 0%, #E8F5D4 15%, #D4E8C4 30%, #B8D4A8 50%, #8BB896 70%, #6BA07A 85%, #004033 100%);
-            margin-top: 64px;
         }
 
         .form-container {
@@ -520,24 +488,29 @@
         }
 
         .form-section {
-            margin-top: 32px;
-            margin-bottom: 32px;
-            padding: 32px;
-            background: var(--lime-warm);
-            border-radius: 12px;
+            margin-top: 24px;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: #FFFFFF;
+            border-radius: 16px;
             animation: fadeInUp 0.35s ease-out;
             animation-fill-mode: both;
             position: relative;
             z-index: 0;
             overflow: visible;
-            box-shadow: 0 2px 4px rgba(0,64,51,0.05);
-            border: none;
+            box-shadow: none;
+            border: 1px solid #EAEAEA;
             transition: all 0.25s ease-in-out;
+        }
+        
+        /* Jemné optické oddělení + „zebra“ efekt pro sekce ve výpočtu */
+        .form-container .form-section:nth-of-type(even) {
+            background: #FAFBF9;
         }
         
         /* Increased padding for "Pronajímané vozidlo" section - unified to 32px */
         .rental-vehicle-section {
-            padding: 32px;
+            padding: 20px;
         }
         
         .form-section:first-of-type {
@@ -545,7 +518,6 @@
         }
         
         .form-section:hover {
-            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
             transform: translateY(-1px);
         }
         
@@ -578,17 +550,16 @@
 
         /* Visual separation between damaged vehicle category section and rental vehicle section */
         #damagedVehicleCategorySection + .form-section {
-            margin-top: 32px;
+            margin-top: 24px;
             padding-top: 1.5rem;
-            border-top: 1px solid #E5E7EB;
         }
 
         /* Nadpisy sekcí */
         h2.section-title {
             font-weight: 700;
             font-size: 18px;
-            margin-bottom: 10px;
-            color: #004033;
+            margin-bottom: 18px;
+            color: #003E2F;
         }
 
         /* Zvýraznění částí textu */
@@ -718,8 +689,35 @@
             z-index: 10001;
         }
 
-        .form-group input,
-        .form-group select {
+        /* Autocomplete inputs styled like select with chevron */
+        .form-group.autocomplete-select input {
+            padding-right: 44px;
+        }
+
+        .autocomplete-input-wrapper {
+            position: relative;
+        }
+
+        .autocomplete-input-wrapper::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            right: 18px;
+            transform: translateY(-50%) rotate(0deg);
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-size: 20px 20px;
+            transition: transform 0.2s ease;
+        }
+
+        .form-group.autocomplete-select.open .autocomplete-input-wrapper::after {
+            transform: translateY(-50%) rotate(180deg);
+        }
+
+        .form-group input {
             font-family: 'DirectSans', sans-serif;
             padding: 12px 14px;
             border: none;
@@ -739,15 +737,13 @@
             color: #888;
         }
         
-        .form-group input:hover,
-        .form-group select:hover {
+        .form-group input:hover {
             border-bottom-color: #B9CF00;
             transform: translateY(-1px);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        .form-group input:focus,
-        .form-group select:focus {
+        .form-group input:focus {
             outline: none;
             border: none;
             border-bottom: 2px solid #B9CF00;
@@ -769,21 +765,43 @@
             box-shadow: none;
         }
         
+        /* Modern unified select styling (Direct UI-like) */
         .form-group select {
-            cursor: pointer;
+            font-family: 'DirectSans', sans-serif;
+            width: 100%;
             appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23004033' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            border-radius: 10px;
+            border: 1px solid #E2E2E2;
+            background-color: #FFFFFF;
+            color: #1E1E1E;
+            font-size: 14px;
+            padding: 10px 44px 10px 12px;
+            cursor: pointer;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 15px center;
-            padding-right: 40px;
+            background-position: right 18px center;
+            background-size: 14px 14px;
+            letter-spacing: -0.2px;
+            line-height: 1.6;
+            box-shadow: none;
         }
-        
+
+        /* Hide default arrow in old IE/Edge */
+        .form-group select::-ms-expand {
+            display: none;
+        }
+
         .form-group select:hover {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23004033' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            border-color: #B9CF00;
         }
-        
+
         .form-group select:focus {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23004033' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            outline: none;
+            border-color: #1FA86A;
+            box-shadow: 0 0 0 2px rgba(31, 168, 106, 0.2);
         }
 
         .autocomplete-dropdown {
@@ -855,7 +873,7 @@
             top: 0;
             bottom: 0;
             width: 3px;
-            background-color: #004033;
+            background-color: var(--lime-brand);
         }
         
         .autocomplete-item.selected {
@@ -916,7 +934,7 @@
         /* Category Result Intro */
         .category-result-intro {
             font-size: 16px;
-            color: #004033;
+            color: #7D7D7D;
             margin-bottom: 16px;
             line-height: 1.6;
         }
@@ -924,7 +942,7 @@
         /* Rental Vehicle Intro */
         .rental-vehicle-intro {
             font-size: 16px;
-            color: #004033;
+            color: #7D7D7D;
             margin-bottom: 12px;
             line-height: 1.6;
             font-weight: 500;
@@ -997,7 +1015,7 @@
         .category-note {
             font-size: 14px;
             font-weight: 400;
-            color: #004033;
+            color: #7D7D7D;
             font-style: italic;
             margin-top: 5px;
             line-height: 1.6;
@@ -1056,9 +1074,10 @@
 
         .discount-info {
             font-size: 16px;
-            color: #004033;
             margin-top: 6px;
             line-height: 1.6;
+            font-style: italic;
+            color: #7D7D7D;
         }
 
         .rate-value {
@@ -1096,15 +1115,15 @@
 
         .models-category-description {
             font-size: 16px;
-            color: #004033;
+            color: #7D7D7D;
             margin-bottom: 12px;
             line-height: 1.6;
             margin-top: 0;
         }
-
+        
         .models-summary-text {
             font-size: 16px;
-            color: #004033;
+            color: #7D7D7D;
             line-height: 1.6;
             margin: 0;
             font-style: italic;
@@ -1183,8 +1202,7 @@
 
         .models-table td {
             padding: 8px;
-            border-top: 1px solid #E5E7EB;
-            border-color: #E5E7EB;
+            border-bottom: 1px solid #E6E9E8;
             position: relative;
             line-height: 1.7;
         }
@@ -1232,13 +1250,13 @@
 
         /* Results */
         .results-section {
-            background: var(--lime-warm);
-            border: none;
-            border-left: 4px solid var(--lime-brand);
-            box-shadow: 0 2px 4px rgba(0,64,51,0.05);
-            border-radius: 12px;
-            padding: 32px;
-            margin: 2rem 0;
+            background: #FAFBF9;
+            border-radius: 16px;
+            border-top: 3px solid #CDE2B8;
+            border: 1px solid #EAEAEA;
+            box-shadow: none;
+            padding: 20px 20px 24px;
+            margin: 24px 0 24px;
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
@@ -1290,7 +1308,6 @@
         }
         
         .result-box:hover {
-            box-shadow: 0 4px 12px rgba(0, 64, 51, 0.08);
             transition: all 0.25s ease-in-out;
         }
 
@@ -1347,9 +1364,10 @@
             font-family: 'DirectSans', sans-serif;
             font-size: 22px;
             font-weight: 600;
-            color: #004033;
+            color: #003E2F;
             line-height: 1.6;
             letter-spacing: -0.2px;
+            padding: 4px 0;
         }
 
         .result-note {
@@ -1488,11 +1506,11 @@
             font-family: 'DirectSans', sans-serif;
             font-size: 16px;
             font-weight: 400;
-            color: #004033;
+            color: #7D7D7D;
             line-height: 1.6;
             letter-spacing: 0.1px;
-            margin-top: 32px;
-            margin-bottom: 32px;
+            margin-top: 24px;
+            margin-bottom: 24px;
             padding: 36px 32px;
             border-top: 3px solid #C4DE00;
             background-color: #FFFFFF;
@@ -1501,11 +1519,11 @@
         }
 
         .footer-text h3 {
-            color: #004033 !important;
+            color: #003E2F !important;
             font-family: 'DirectSans', sans-serif !important;
             font-size: 22px !important;
             font-weight: 700 !important;
-            margin-bottom: 16px !important;
+            margin-bottom: 22px !important;
             margin-top: 0 !important;
             position: relative !important;
         }
@@ -1515,7 +1533,7 @@
             display: block;
             width: 80px;
             height: 3px;
-            background-color: #004033;
+            background-color: #003E2F;
             margin-top: 8px;
             border-radius: 2px;
         }
@@ -1525,11 +1543,11 @@
             position: relative;
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
+            align-items: center;
             padding: 40px 60px;
             background: linear-gradient(90deg, #004033 0%, #015B48 100%);
             border-top: 3px solid rgba(185, 207, 0, 0.9);
-            color: #ffffff;
+            color: rgba(255, 255, 255, 0.9);
             font-family: 'DirectSans', sans-serif;
             font-size: 13px;
             line-height: 1.7;
@@ -1537,6 +1555,14 @@
             margin-top: -100px;
             z-index: 1;
             box-shadow: 0 -4px 8px rgba(0, 64, 51, 0.08);
+        }
+        /* Ensure footer typography matches index.html (override global p/span sizing) */
+        .footer,
+        .footer p,
+        .footer span,
+        .footer a {
+            font-size: 13px;
+            line-height: 1.7;
         }
 
         .footer-content {
@@ -1593,17 +1619,18 @@
             font-size: 16px;
             font-weight: 400;
             color: #004033;
-            padding: 36px 32px;
-            margin-top: 64px;
-            box-shadow: 0 2px 8px rgba(0, 64, 51, 0.05);
+            padding: 24px 24px 28px;
+            margin-top: 24px;
+            box-shadow: none;
             line-height: 1.6;
             letter-spacing: 0.1px;
         }
 
         .supplementary-info-columns {
             display: flex;
-            gap: 30px;
+            gap: 32px; /* sjednocený horizontální odstup mezi sloupci doplňujících informací */
             margin-top: 15px;
+            align-items: flex-start; /* zajistí, že oba sloupce začínají ve stejné výšce */
         }
 
         .supplementary-info-column {
@@ -1640,6 +1667,224 @@
             margin-bottom: 0;
         }
 
+        /* Print summary layout (used only for PDF/print) */
+        .print-summary {
+            display: none;
+            font-family: 'Nunito Sans', 'DirectSans', sans-serif;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #004734;
+        }
+        
+        .print-summary-inner {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            padding: 0;
+        }
+        
+        .print-summary-header {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 18px; /* tightened space under yellow line for more compact header-to-content transition */
+            border-bottom: 1px solid #E2E2E2;
+            padding-bottom: 10px;
+        }
+        
+        .print-header-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            margin-bottom: 12px; /* slightly tighter space under logo for better vizuální rovnováhu s nadpisem */
+        }
+        
+        .print-summary-header .print-logo-mini img {
+            height: 40px; /* logo height approx. 40 px, keep proportions */
+            width: auto;
+            margin-top: -2px; /* jemně posunuto dolů o cca 2–3 px tak, aby optická osa loga lépe lícovala s nadpisem */
+        }
+
+        .print-header-date {
+            font-size: 11px;
+            color: #7D7D7D;
+        }
+
+        .print-summary-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #004734;
+            text-align: center;
+            position: relative;
+            padding-bottom: 4px;
+        }
+        
+        .print-summary-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 2px;
+            background-color: #D7E56F;
+            margin: 4px auto 0; /* slightly reduced gap between title text and yellow line (was 6px) */
+            border-radius: 999px;
+        }
+        
+        .print-section-box {
+            background: #FFFFFF;
+            border-radius: 8px;
+            padding: 14px 16px;
+            border: 1px solid #EAEAEA;
+            margin-top: 0;
+            margin-bottom: 24px;
+        }
+
+        /* Optické oddělení mezi „Výsledná sazba“ a následující sekcí bez rozbití konzistentní mezery 24 px */
+        .print-section-box.print-section-box-highlight + .print-section-box {
+            border-top: 1px solid #EAEAEA; /* jemná dělicí linka mezi boxy */
+            padding-top: 18px;
+        }
+        
+        .print-section-box-highlight {
+            background-color: #FAFBF9; /* light yellow highlight for key rate section */
+        }
+
+        /* Models-in-category box in print summary */
+        .print-section-box-models {
+            background-color: #FBFCFA; /* slightly lighter background for better print contrast while keeping consistency with „Výsledná sazba“ */
+            margin-bottom: 20px; /* ~4 px tighter spacing under models section to better integrate with surrounding blocks (24 px → 20 px) */
+        }
+
+        .print-models-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #004734;
+            margin: 0 0 6px 0;
+        }
+
+        .print-models-description {
+            font-size: 12px;
+            color: #7D7D7D;
+            margin: 0 0 10px 0;
+            line-height: 1.5;
+        }
+
+        .print-models-summary {
+            font-size: 12px;
+            color: #004734;
+            line-height: 1.5;
+            margin: 0;
+            margin-top: -2px; /* subtle optical alignment tweak so first line of model list sits on same visual line as section title */
+            font-style: italic; /* models italic by default */
+        }
+
+        .print-models-summary strong {
+            font-weight: 600;   /* brand bold */
+            font-style: normal; /* brand not italic */
+        }
+
+        /* Extra visual separation for rental rate section in print summary –
+           oddělení mezi „Pronajímané vozidlo“ a „Výsledná sazba pronajímaného vozidla“ */
+        .print-section-box-rental-rate {
+            border-top: 1px solid #EAEAEA;
+            padding-top: 18px;
+            margin-bottom: 28px; /* o 4 px větší mezera pod sekcí (24 px → 28 px) pro jasnější oddělení od „Doplňujících informací“ */
+        }
+
+        .print-section-box h2 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #004734;
+        }
+
+        .print-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+        
+        .print-label {
+            flex: 1;
+            text-align: left;
+        }
+        
+        .print-value {
+            flex: 0 0 auto;
+            text-align: right;
+            font-weight: 600;
+            color: #003E2F;
+        }
+
+        .print-rate-table {
+            margin-top: 4px;
+        }
+
+        .print-rate-table .print-row {
+            padding-bottom: 3px;
+            margin-bottom: 5px;
+            border-bottom: 1px solid #E6E9E8;
+        }
+
+        .print-rate-table .print-row:last-child {
+            border-bottom: none;
+        }
+
+        .print-note {
+            margin-top: 4px;
+            font-size: 11px;
+            color: #7D7D7D;
+        }
+
+        /* Dvou-sloupcové „Doplňující informace“ v tiskovém souhrnu */
+        .print-section-box ul.print-note {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr)); /* two balanced columns */
+            column-gap: 32px; /* horizontal gap between columns – keep as requested */
+            row-gap: 6px;
+            padding-left: 18px;
+            margin-top: 4px;
+            font-size: 12px;
+            line-height: 1.5; /* slightly tighter leading for more compact, professional print look */
+            color: #004734;
+            list-style-position: outside;
+            align-items: start; /* ensure bullets in both columns share the same top offset */
+        }
+        
+        .print-section-box ul.print-note li {
+            margin-bottom: 0; /* rely on row-gap for consistent vertical rhythm between rows */
+            line-height: 1.65; /* lehce vyšší řádkování v tiskové verzi pro lepší čitelnost odstavců doplňujících informací */
+        }
+
+        .print-section-box ul.print-note li::marker {
+            color: #CDE2B8;
+        }
+
+        #printDiscountNote {
+            font-style: italic;
+            color: #8A8F8D;
+        }
+
+        .print-summary-footer {
+            margin-top: 44px; /* o ~8 px větší vzdálenost od doplňujících informací pro lepší optické vyvážení spodní části stránky */
+            padding: 0 12px;
+            background-color: transparent;
+            color: #7D7D7D;
+            font-size: 11px;
+            line-height: 1.5;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: auto;
+        }
+
+        /* Datum výpočtu ve stejné vizuální úrovni jako zbytek řádku */
+        .print-summary-footer #printDate {
+            font-size: 11px;
+            font-weight: 400;
+        }
+
         @media (max-width: 768px) {
             .supplementary-info-columns {
                 flex-direction: column;
@@ -1649,8 +1894,8 @@
         
         .category-note,
         .result-note {
-            line-height: 1.5;
-            color: #444;
+            line-height: 1.6;
+            color: #7D7D7D;
         }
 
         /* Responsive */
@@ -1720,78 +1965,90 @@
             }
         }
 
-         /* Print Styles */
+        /* Print Styles */
         @media print {
             @page {
-                margin: 8mm 15mm;
+                size: A4;
+                margin: 17mm 15mm 17mm 15mm;
+            }
+
+            *,
+            *::before,
+            *::after {
+                box-shadow: none !important;
+                text-shadow: none !important;
+                background-image: none !important;
+            }
+
+            html,
+            body {
+                height: auto !important;
             }
 
             body {
                 background-color: #ffffff !important;
-                color: #004033 !important;
-                font-family: 'DirectSans', sans-serif !important;
-                line-height: 1.5 !important;
+                color: #004734 !important;
+                font-family: 'Nunito Sans', 'DirectSans', sans-serif !important;
+                font-size: 12px !important;
+                line-height: 1.6 !important;
             }
 
-            .header {
-                position: static !important;
-                box-shadow: none !important;
+            /* Slightly stronger weight for key numeric values in print to improve legibility on paper */
+            .print-value {
+                font-weight: 650 !important;
             }
 
-            .main-content {
-                padding: 30px 0 60px 0 !important;
-                box-shadow: none !important;
-                background-color: transparent !important;
-            }
-
-            .form-container {
-                padding: 0 20px 20px 20px !important;
-                box-shadow: none !important;
-            }
-
-            .form-section,
-            .results-section,
-            #damagedVehicleCategorySection,
-            .footer-text,
-            .footer {
-                page-break-inside: avoid !important;
-            }
-
+            /* Skrýt webovou hlavičku, navigaci, patičku a interaktivní prvky */
+            .header,
+            .header-nav,
+            .nav-link,
+            .footer,
+            .cta-button,
             .secondary-buttons,
             .btn-print,
             .btn-reset,
             #actionButtonsContainer,
             .autocomplete-dropdown,
             .date-icon,
+            .calculation-message {
+                display: none !important;
+            }
+
+            .main-content {
+                max-width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                box-shadow: none !important;
+                background-color: #ffffff !important;
+            }
+
+            .form-container {
+                padding: 0 !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+                box-shadow: none !important;
+                background: #ffffff !important;
+            }
+
+            /* Schovat samotný formulář a neveřejné boxy v tisku */
+            #calculationForm,
+            .form-section,
+            .results-section,
+            #damagedVehicleCategorySection,
+            .footer-text,
+            .doplnujici-info,
             .print-logo-header {
                 display: none !important;
             }
 
-            .print-date {
-                display: block !important;
-                visibility: visible !important;
-                position: fixed !important;
-                bottom: 10mm !important;
-                left: 15mm !important;
-                font-family: 'DirectSans', sans-serif !important;
-                font-size: 9pt !important;
-                color: #004033 !important;
-                font-weight: 400 !important;
-                z-index: 10000 !important;
+            /* Hide main on-page title so only the print header title is visible */
+            .page-title {
+                display: none !important;
             }
 
-            .print-footer-contact {
+            /* Zobrazit čistý tiskový souhrn */
+            #printSummary {
                 display: block !important;
-                visibility: visible !important;
-                position: fixed !important;
-                bottom: 10mm !important;
-                right: 15mm !important;
-                font-family: 'DirectSans', sans-serif !important;
-                font-size: 9pt !important;
-                color: #004033 !important;
-                text-align: right !important;
-                z-index: 10000 !important;
-                font-weight: 400 !important;
             }
 
             .supplementary-info-columns,
@@ -1802,11 +2059,20 @@
                 color: #004033 !important;
             }
 
+            /* Webová patička se v tisku nezobrazuje */
             .footer {
-                background: linear-gradient(180deg, #004033 0%, #015B48 100%) !important;
-                border-top: 3px solid #B9CF00 !important;
-                color: #ffffff !important;
-                padding: 30px 40px !important;
+                display: none !important;
+            }
+
+            /* Zjemnění vzhledu formulářových polí pro tisk */
+            input,
+            select,
+            textarea {
+                border: 0.5pt solid #004033 !important;
+                padding: 2pt 4pt !important;
+                border-radius: 0 !important;
+                background: transparent !important;
+                box-shadow: none !important;
             }
         }
 
@@ -1829,7 +2095,7 @@
 
         p {
             font-size: 16px;
-            line-height: 1.65;
+            line-height: 1.6;
         }
 
         li {
@@ -1899,22 +2165,28 @@
 
             <form id="calculationForm">
                 <!-- Poškozené vozidlo -->
-                <div class="form-section">
+                <div class="form-section" id="damagedVehicleSection">
                     <h2 class="section-title">Poškozené vozidlo</h2>
                     <div class="form-row">
-                        <div class="form-group">
+                        <div class="form-group autocomplete-select">
                             <label>Rok uvedení do provozu <span class="info-icon" data-tooltip="U vozidel starších než 8 let se sazba automaticky snižuje o 20 %.">ℹ️</span></label>
-                            <input type="text" id="rokProvozu" placeholder="Vyberte rok" autocomplete="off" required>
+                            <div class="autocomplete-input-wrapper">
+                                <input type="text" id="rokProvozu" placeholder="Vyberte rok" autocomplete="off" required>
+                            </div>
                             <div class="autocomplete-dropdown" id="rokProvozuDropdown"></div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group autocomplete-select">
                             <label>Značka</label>
-                            <input type="text" id="znackaPoskozene" placeholder="Vyberte značku" autocomplete="off">
+                            <div class="autocomplete-input-wrapper">
+                                <input type="text" id="znackaPoskozene" placeholder="Vyberte značku" autocomplete="off">
+                            </div>
                             <div class="autocomplete-dropdown" id="znackaPoskozeneDropdown"></div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group autocomplete-select">
                             <label>Model</label>
-                            <input type="text" id="modelPoskozene" placeholder="Vyberte model" autocomplete="off">
+                            <div class="autocomplete-input-wrapper">
+                                <input type="text" id="modelPoskozene" placeholder="Vyberte model" autocomplete="off">
+                            </div>
                             <div class="autocomplete-dropdown" id="modelPoskozeneDropdown"></div>
                         </div>
                     </div>
@@ -1953,14 +2225,18 @@
                 <div class="form-section rental-vehicle-section">
                     <h2 class="section-title">Pronajímané vozidlo</h2>
                     <div class="form-row">
-                        <div class="form-group">
+                        <div class="form-group autocomplete-select">
                             <label>Značka</label>
-                            <input type="text" id="znackaPronajmene" placeholder="Vyberte značku" autocomplete="off">
+                            <div class="autocomplete-input-wrapper">
+                                <input type="text" id="znackaPronajmene" placeholder="Vyberte značku" autocomplete="off">
+                            </div>
                             <div class="autocomplete-dropdown" id="znackaPronajmeneDropdown"></div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group autocomplete-select">
                             <label>Model</label>
-                            <input type="text" id="modelPronajmene" placeholder="Vyberte model" autocomplete="off">
+                            <div class="autocomplete-input-wrapper">
+                                <input type="text" id="modelPronajmene" placeholder="Vyberte model" autocomplete="off">
+                            </div>
                             <div class="autocomplete-dropdown" id="modelPronajmeneDropdown"></div>
                         </div>
                     </div>
@@ -2035,15 +2311,104 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Print Date (hidden on screen, visible in print - only on last page) -->
-            <div class="print-date">
-                Datum výpočtu: <span id="printDate"></span>
-            </div>
-            
-            <!-- Print Footer Contact (hidden on screen, visible in print - only on last page) -->
-            <div class="print-footer-contact">
-                +420 270 270 777 | info@direct.cz | www.direct.cz
+
+            <!-- Clean print summary layout (visible only in print) -->
+            <div id="printSummary" class="print-summary">
+                <div class="print-summary-inner">
+                    <div class="print-summary-header">
+                        <div class="print-header-top">
+                            <div class="print-logo-mini">
+                                <img src="Loga/Logo+pozitivní+RGB.png" alt="Direct pojišťovna">
+                            </div>
+                        </div>
+                        <div class="print-summary-title">Výpočet půjčovného za náhradní vozidlo</div>
+                    </div>
+
+                    <div class="print-section-box">
+                        <h2>Poškozené vozidlo</h2>
+                        <div class="print-row">
+                            <span class="print-label">Rok uvedení do provozu</span>
+                            <span class="print-value" id="printDamagedYear">-</span>
+                        </div>
+                        <div class="print-row">
+                            <span class="print-label">Značka</span>
+                            <span class="print-value" id="printDamagedBrand">-</span>
+                        </div>
+                        <div class="print-row">
+                            <span class="print-label">Model</span>
+                            <span class="print-value" id="printDamagedModel">-</span>
+                        </div>
+                        <div class="print-row">
+                            <span class="print-label">Kategorie náhradního vozidla</span>
+                            <span class="print-value" id="printDamagedCategory">-</span>
+                        </div>
+                        <p class="print-note" id="printDamagedCategoryNote" style="display: none;"></p>
+                    </div>
+
+                    <div class="print-section-box print-section-box-highlight">
+                        <h2>Výsledná sazba</h2>
+                        <div class="print-rate-table">
+                            <div class="print-row">
+                                <span class="print-label">Cena za 1 den zapůjčení při době pronájmu do 10 dnů</span>
+                                <span class="print-value" id="printPrice1_10">-</span>
+                            </div>
+                            <div class="print-row">
+                                <span class="print-label">Cena za 1 den zapůjčení při době pronájmu 11–30 dnů</span>
+                                <span class="print-value" id="printPrice11_30">-</span>
+                            </div>
+                        </div>
+                        <p class="print-note" id="printPriceNote"></p>
+                        <p class="print-note">Uvedené sazby jsou v Kč bez DPH a nebudou u nich odečítány pevné náklady. K uvedeným částkám bude připočtena DPH dle platné sazby.</p>
+                        <p class="print-note" id="printDiscountNote" style="display: none;">Sazba byla snížena o 20 % z důvodu stáří poškozeného vozidla (více než 8 let).</p>
+                    </div>
+
+                    <!-- Modely v této kategorii – tisková verze -->
+                    <div class="print-section-box print-section-box-highlight print-section-box-models" id="printCategoryModelsBox" style="display: none;">
+                        <h2 class="print-models-title">Modely v této kategorii</h2>
+                        <p class="print-models-description">Níže uvedené vozy spadají do této kategorie vozidel podle platného ceníku.</p>
+                        <p class="print-models-summary" id="printCategoryModelsText"></p>
+                    </div>
+
+                    <div class="print-section-box">
+                        <h2>Pronajímané vozidlo</h2>
+                        <div class="print-row">
+                            <span class="print-label">Značka</span>
+                            <span class="print-value" id="printRentalBrand">-</span>
+                        </div>
+                        <div class="print-row">
+                            <span class="print-label">Model</span>
+                            <span class="print-value" id="printRentalModel">-</span>
+                        </div>
+                    </div>
+
+                    <div class="print-section-box print-section-box-highlight print-section-box-rental-rate">
+                        <h2>Výsledná sazba pronajímaného vozidla</h2>
+                        <div class="print-rate-table">
+                            <div class="print-row">
+                                <span class="print-label">Cena za 1 den zapůjčení při době pronájmu do 10 dnů</span>
+                                <span class="print-value" id="printRentalPrice1_10">-</span>
+                            </div>
+                            <div class="print-row">
+                                <span class="print-label">Cena za 1 den zapůjčení při době pronájmu 11–30 dnů</span>
+                                <span class="print-value" id="printRentalPrice11_30">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="print-section-box">
+                        <h2>Doplňující informace</h2>
+                        <ul class="print-note">
+                            <li>Všechny denní sazby jsou uvedeny v Kč bez DPH a nebudou u nich odečítány pevné náklady.</li>
+                            <li>Denní sazby ostatních vozidel budou posuzovány individuálně.</li>
+                            <li>Při stáří poškozeného vozidla nad 8 let bude denní sazba snížena o 20 %.</li>
+                            <li>Pro sazby půjčovného nad 30 dní je nutná konzultace s likvidátorem dané škodní události.</li>
+                        </ul>
+                    </div>
+
+                    <div class="print-summary-footer">
+                        Direct pojišťovna a.s.&nbsp;•&nbsp;info@direct.cz&nbsp;•&nbsp;www.direct.cz&nbsp;•&nbsp;+420 270 270 777&nbsp;•&nbsp;Datum výpočtu:&nbsp;<span id="printDate"></span>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -2056,9 +2421,8 @@
                 <span>221 221 221</span>
             </div>
             <div class="footer-right">
-                <p>Direct pojišťovna a.s.<br>
-                IČO: 250 85 771<br>
-                Sídlo: Na Florenci 2116/15, 110 00 Praha 1</p>
+                <p>Direct pojišťovna, a.s., se sídlem Nové sady 996/25, Brno, 602 00, IČO: 250 739 58, DIČ: CZ 699 004 195,<br>
+                zapsaná v obchodním rejstříku krajského soudu v Brně, oddíl B, vložka 3365.</p>
             </div>
         </div>
     </footer>
@@ -2546,9 +2910,15 @@
         function initAutocomplete(inputId, dropdownId, options, optionsGetter = null) {
             const input = document.getElementById(inputId);
             const dropdown = document.getElementById(dropdownId);
+            const autocompleteGroup = input.closest('.form-group.autocomplete-select');
             let selectedIndex = -1;
             let currentOptions = options;
             let isSelectingFromDropdown = false;
+
+            function setOpenState(isOpen) {
+                if (!autocompleteGroup) return;
+                autocompleteGroup.classList.toggle('open', isOpen);
+            }
 
             // Function to update options dynamically
             function updateOptions(newOptions) {
@@ -2570,6 +2940,7 @@
 
                 if (filtered.length === 0) {
                     dropdown.classList.remove('show');
+                    setOpenState(false);
                     return;
                 }
 
@@ -2595,6 +2966,7 @@
                         // Set value and close dropdown immediately
                         input.value = option;
                         dropdown.classList.remove('show');
+                        setOpenState(false);
                         
                         // Use setTimeout to ensure dropdown is closed before focusing
                         setTimeout(() => {
@@ -2614,6 +2986,7 @@
                 });
 
                 dropdown.classList.add('show');
+                setOpenState(true);
                 selectedIndex = -1;
             }
 
@@ -2669,6 +3042,7 @@
                             // Set value and close dropdown immediately
                             input.value = items[indexToSelect].textContent;
                             dropdown.classList.remove('show');
+                            setOpenState(false);
                             
                             // Use setTimeout to ensure dropdown is closed before focusing
                             setTimeout(() => {
@@ -2686,6 +3060,7 @@
                 } else if (e.key === 'Escape') {
                     e.preventDefault();
                     dropdown.classList.remove('show');
+                    setOpenState(false);
                     selectedIndex = -1;
                 }
             });
@@ -2699,6 +3074,7 @@
                     setTimeout(() => {
                         if (dropdown.classList.contains('show')) {
                             dropdown.classList.remove('show');
+                            setOpenState(false);
                         }
                     }, 0);
                 }
@@ -3554,14 +3930,35 @@
                 const noteText = notes.length > 0 ? notes.join('. ') : '';
                 document.getElementById('noteDo14').textContent = noteText;
                 document.getElementById('noteNad14').textContent = noteText;
-                
-                // Show/hide discount info separately
+
+                // Update print prices block
+                const printPrice1_10 = document.getElementById('printPrice1_10');
+                const printPrice11_30 = document.getElementById('printPrice11_30');
+                const printPriceNote = document.getElementById('printPriceNote');
+                const printDiscountNote = document.getElementById('printDiscountNote');
+                const printRentalPrice1_10 = document.getElementById('printRentalPrice1_10');
+                const printRentalPrice11_30 = document.getElementById('printRentalPrice11_30');
+
+                if (printPrice1_10) printPrice1_10.textContent = priceText1;
+                if (printPrice11_30) printPrice11_30.textContent = priceText2;
+                if (printRentalPrice1_10) printRentalPrice1_10.textContent = priceText1;
+                if (printRentalPrice11_30) printRentalPrice11_30.textContent = priceText2;
+                if (printPriceNote) printPriceNote.textContent = noteText;
+
+                // Show/hide discount info separately for screen and print
                 const discountInfo = document.getElementById('discountInfo');
                 if (discountInfo) {
                     if (apply20PercentDiscount) {
                         discountInfo.style.display = 'block';
                     } else {
                         discountInfo.style.display = 'none';
+                    }
+                }
+                if (printDiscountNote) {
+                    if (apply20PercentDiscount) {
+                        printDiscountNote.style.display = 'block';
+                    } else {
+                        printDiscountNote.style.display = 'none';
                     }
                 }
                 
@@ -3912,6 +4309,14 @@
             if (modelsSummary && modelsSummaryText) {
                 modelsSummaryText.innerHTML = formattedText;
                 modelsSummary.style.display = 'block';
+            }
+
+            // Also propagate formatted models list into print summary box
+            const printModelsBox = document.getElementById('printCategoryModelsBox');
+            const printModelsText = document.getElementById('printCategoryModelsText');
+            if (printModelsBox && printModelsText) {
+                printModelsText.innerHTML = formattedText;
+                printModelsBox.style.display = formattedText ? 'block' : 'none';
             }
 
             // Show section

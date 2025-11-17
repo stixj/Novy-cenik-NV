@@ -523,6 +523,7 @@
             box-shadow: 0 2px 8px rgba(0, 64, 51, 0.06), 0 1px 3px rgba(196, 222, 0, 0.12);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             animation: fadeInScale 0.3s ease-in-out;
+            display: none;
         }
         
         @keyframes fadeInScale {
@@ -794,73 +795,89 @@
             font-family: 'DirectSans', sans-serif;
             font-size: 16px;
             font-weight: 400;
-            color: #004033;
+            color: #7D7D7D;
             line-height: 1.6;
             letter-spacing: 0.1px;
-            margin-top: 32px;
-            margin-bottom: 32px;
+            margin-top: 24px;
+            margin-bottom: 24px;
             padding: 36px 32px;
             border-top: 3px solid #C4DE00;
             background-color: #FFFFFF;
             border-radius: 24px;
-            box-shadow: 0 4px 16px rgba(0, 64, 51, 0.05);
+            box-shadow: 0 2px 6px rgba(0,64,51,0.05);
+        }
+
+        .doplnujici-info {
+            background: #FFFFFF;
+            border: 1px solid #E6EEB8;
+            border-top: 3px solid #C4DE00;
+            border-radius: 24px;
+            font-size: 16px;
+            font-weight: 400;
+            color: #004033;
+            padding: 24px 24px 28px;
+            margin-top: 24px;
+            box-shadow: none;
+            line-height: 1.6;
+            letter-spacing: 0.1px;
         }
         
         .footer-text h3 {
-            color: #004033 !important;
+            color: #003E2F !important;
             font-family: 'DirectSans', sans-serif !important;
             font-size: 22px !important;
             font-weight: 700 !important;
-            margin-bottom: 16px !important;
+            margin-bottom: 22px !important;
             margin-top: 0 !important;
             position: relative !important;
         }
-
+        
         .footer-text h3::after {
             content: '';
             display: block;
             width: 80px;
             height: 3px;
-            background-color: #004033;
+            background-color: #003E2F;
             margin-top: 8px;
             border-radius: 2px;
         }
-
+        
         .supplementary-info-columns {
             display: flex;
             gap: 30px;
             margin-top: 15px;
         }
-
+        
         .supplementary-info-column {
             flex: 1;
         }
-
+        
         .supplementary-info-column ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
-
+        
         .supplementary-info-column li {
             color: #004033;
-            font-size: 14px;
-            line-height: 1.6;
+            font-size: 15px;
+            line-height: 1.65;
             letter-spacing: -0.2px;
             margin-bottom: 10px;
             padding-left: 20px;
             position: relative;
         }
-
+        
         .supplementary-info-column li:before {
             content: "•";
             position: absolute;
             left: 0;
-            color: #B9CF00;
+            color: #C4DE00;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 14px;
+            line-height: 1.5;
         }
-
+        
         .supplementary-info-column li:last-child {
             margin-bottom: 0;
         }
@@ -938,14 +955,17 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 60px;
+            padding: 40px 60px;
             background: linear-gradient(90deg, #004033 0%, #015B48 100%);
-            border-top: 2px solid rgba(185, 207, 0, 0.8);
+            border-top: 3px solid rgba(185, 207, 0, 0.9);
             color: rgba(255, 255, 255, 0.9);
             font-family: 'DirectSans', sans-serif;
             font-size: 13px;
             line-height: 1.7;
             letter-spacing: 0.1px;
+            margin-top: -100px;
+            z-index: 1;
+            box-shadow: 0 -4px 8px rgba(0, 64, 51, 0.08);   
         }
 
         .footer-content {
@@ -962,7 +982,7 @@
             text-align: left;
             display: flex;
             flex-direction: column;
-            gap: 2px;
+            gap: 4px;
         }
 
         .footer-left span {
@@ -1311,7 +1331,7 @@
         <div class="tab-content active" id="tab-direct">
             <div class="controls">
                 <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Vyhledat podle kategorie, značky nebo typu vozidla...">
+                    <input type="text" id="searchInput" placeholder="Vyhledat podle kategorie, značky nebo modelu vozidla...">
                 </div>
             </div>
 
@@ -1335,7 +1355,7 @@
                 </div>
             </div>
             
-            <div class="footer-text">
+            <div class="footer-text doplnujici-info">
                 <h3>Doplňující informace</h3>
                 <div class="supplementary-info-columns">
                     <div class="supplementary-info-column">
@@ -1358,7 +1378,7 @@
         <div class="tab-content" id="tab-rps">
             <div class="controls">
                 <div class="search-box">
-                    <input type="text" id="searchInputRPS" placeholder="Vyhledat podle kategorie, značky nebo typu vozidla...">
+                    <input type="text" id="searchInputRPS" placeholder="Vyhledat podle kategorie, značky nebo modelu vozidla...">
                 </div>
             </div>
 
@@ -1382,7 +1402,7 @@
                 </div>
             </div>
             
-            <div class="footer-text">
+            <div class="footer-text doplnujici-info">
                 <h3>Doplňující informace</h3>
                 Všechny sazby jsou uvedeny v Kč bez DPH. Při zapůjčení vozidla staršího 10-ti let odečteme 20 % tabulkové ceny.<br>
                 Účelnost zapůjčení NV ve vztahu k ujetým km se posuzuje individuálně dle jednotlivých případů.<br>
@@ -1409,9 +1429,8 @@
                 <span>221 221 221</span>
             </div>
             <div class="footer-right">
-                <p>Direct pojišťovna a.s.<br>
-                IČO: 250 85 771<br>
-                Sídlo: Na Florenci 2116/15, 110 00 Praha 1</p>
+                <p>Direct pojišťovna, a.s., se sídlem Nové sady 996/25, Brno, 602 00, IČO: 250 739 58, DIČ: CZ 699 004 195,<br>
+                zapsaná v obchodním rejstříku krajského soudu v Brně, oddíl B, vložka 3365.</p>
             </div>
         </div>
     </footer>

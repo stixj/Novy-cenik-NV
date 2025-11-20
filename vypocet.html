@@ -2358,7 +2358,7 @@
                             </div>
                         </div>
                         <p class="print-note" id="printPriceNote"></p>
-                        <p class="print-note">Uvedené sazby jsou v Kč bez DPH a nebudou u nich odečítány pevné náklady. K uvedeným částkám bude připočtena DPH dle platné sazby.</p>
+                        <p class="print-note">Uvedené sazby jsou v Kč bez DPH a nebudou u nich odečítány pevné náklady.</p>
                         <p class="print-note" id="printDiscountNote" style="display: none;">Sazba byla snížena o 20 % z důvodu stáří poškozeného vozidla (více než 8 let).</p>
                     </div>
 
@@ -2393,6 +2393,7 @@
                                 <span class="print-value" id="printRentalPrice11_30">-</span>
                             </div>
                         </div>
+                        <p class="print-note">Uvedená sazba je maximální výše, kterou vám uhradíme za každý den zapůjčení tohoto vozidla.</p>
                     </div>
 
                     <div class="print-section-box">
@@ -4028,16 +4029,13 @@
                 document.getElementById('noteDo14').textContent = noteText;
                 document.getElementById('noteNad14').textContent = noteText;
 
-                // Update print prices block
-                const printPrice1_10 = document.getElementById('printPrice1_10');
-                const printPrice11_30 = document.getElementById('printPrice11_30');
+                // Update print prices block – zde aktualizujeme jen
+                // "Výsledná sazba pronajímaného vozidla", nikoli blok poškozeného vozidla.
                 const printPriceNote = document.getElementById('printPriceNote');
                 const printDiscountNote = document.getElementById('printDiscountNote');
                 const printRentalPrice1_10 = document.getElementById('printRentalPrice1_10');
                 const printRentalPrice11_30 = document.getElementById('printRentalPrice11_30');
 
-                if (printPrice1_10) printPrice1_10.textContent = priceText1;
-                if (printPrice11_30) printPrice11_30.textContent = priceText2;
                 if (printRentalPrice1_10) printRentalPrice1_10.textContent = priceText1;
                 if (printRentalPrice11_30) printRentalPrice11_30.textContent = priceText2;
                 if (printPriceNote) printPriceNote.textContent = noteText;
@@ -4381,6 +4379,17 @@
             // Display rates
             document.getElementById('damagedRate1_10').textContent = price1_10.toLocaleString('cs-CZ') + ' Kč bez DPH';
             document.getElementById('damagedRate11_30').textContent = price11_30.toLocaleString('cs-CZ') + ' Kč bez DPH';
+
+            // Update print "Výsledná sazba" block for poškozené vozidlo
+            // tak aby tiskové hodnoty odpovídaly této části výpočtu.
+            const printPrice1_10 = document.getElementById('printPrice1_10');
+            const printPrice11_30 = document.getElementById('printPrice11_30');
+            if (printPrice1_10) {
+                printPrice1_10.textContent = price1_10.toLocaleString('cs-CZ') + ' Kč bez DPH';
+            }
+            if (printPrice11_30) {
+                printPrice11_30.textContent = price11_30.toLocaleString('cs-CZ') + ' Kč bez DPH';
+            }
 
             // Generate models list for this category
             // Pro „vozy Škoda“ zobraz pouze modely z konkrétního řádku ceníku,

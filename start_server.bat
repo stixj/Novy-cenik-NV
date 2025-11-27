@@ -1,7 +1,12 @@
 @echo off
 chcp 65001 >nul
+
+REM Change to the directory where this batch file is located
+cd /d "%~dp0"
+
 echo ========================================
 echo Starting local web server...
+echo Current directory: %CD%
 echo ========================================
 echo.
 
@@ -61,7 +66,7 @@ echo ========================================
 echo.
 
 REM Start server in background and open browser
-start "" cmd /c "timeout /t 2 /nobreak >nul && start http://localhost:%PORT%/"
+start "" cmd /c "timeout /t 3 /nobreak >nul && start http://localhost:%PORT%/index.html"
 
 %PYTHON_CMD% -m http.server %PORT%
 

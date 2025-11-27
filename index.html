@@ -317,6 +317,92 @@
             text-align: left;
         }
 
+        /* Tab Description Styles */
+        .main-tab-description {
+            font-family: 'DirectSans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            color: #6E7781;
+            line-height: 1.4;
+            text-align: left;
+            padding: 12px 0 16px 0;
+            margin-bottom: 0;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 40px;
+            padding-right: 40px;
+        }
+
+        .sub-tab-description {
+            font-family: 'DirectSans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            color: #6E7781;
+            line-height: 1.4;
+            text-align: left;
+            padding: 12px 0 16px 0;
+            margin-bottom: 0;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 40px;
+            padding-right: 40px;
+            margin-top: 0;
+        }
+
+        @media (max-width: 768px) {
+            .main-tab-description,
+            .sub-tab-description {
+                padding-left: 20px;
+                padding-right: 20px;
+                font-size: 13px;
+            }
+        }
+
+        /* Price List Header - Info row above search */
+        .price-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'DirectSans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            color: #6E7781;
+            line-height: 1.6;
+            padding-top: 10px;
+            padding-bottom: 14px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 40px;
+            padding-right: 40px;
+        }
+
+        .price-list-subtitle {
+            flex: 1;
+        }
+
+        .price-list-validity {
+            flex-shrink: 0;
+            margin-left: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .price-list-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding-left: 20px;
+                padding-right: 20px;
+                font-size: 13px;
+            }
+
+            .price-list-validity {
+                margin-left: 0;
+                margin-top: 4px;
+            }
+        }
+
         /* Nested Tabs Navigation */
         .tabs-navigation {
             display: flex;
@@ -1318,7 +1404,11 @@
     <!-- Main Content -->
     <main class="main-content">
         <h1 class="page-title">Ceník náhradních vozidel</h1>
-        <p class="page-subtitle">Přehled cen za pronájem náhradních vozidel podle kategorií</p>
+        
+        <!-- Main Tab Description -->
+        <p class="main-tab-description" id="mainTabDescription">
+            Umožňuje rychle vyhledat sazbu pro konkrétní značku nebo model. Zároveň vidíte všechna vozidla v dané kategorii, takže můžete sazby snadno porovnat. Tato část je určena především pro likvidátory a KAPU.
+        </p>
         
         <!-- Nested Tabs Navigation -->
         <div class="tabs-navigation">
@@ -1327,9 +1417,17 @@
             <button class="tab-button" data-tab="historical">Historické ceníky</button>
         </div>
 
+        <!-- Sub Tab Description -->
+        <p class="sub-tab-description" id="subTabDescription">
+            Zobrazuje aktuální sazby půjčovného, podle kterých se v současnosti řídíme. Slouží jako hlavní přehled pro likvidátory a KAPU při určování správné sazby pro konkrétní kategorii vozidla.
+        </p>
+
         <!-- Tab Content: Ceník Direct -->
         <div class="tab-content active" id="tab-direct">
-            <p class="direct-page-validity">Platnost ceníku od 1. 1. 2026</p>
+            <div class="price-list-header">
+                <span class="price-list-subtitle">Přehled cen za pronájem náhradních vozidel podle kategorií</span>
+                <span class="price-list-validity">Platnost ceníku od 1. 1. 2026</span>
+            </div>
             <div class="controls">
                 <div class="search-box">
                     <input type="text" id="searchInput" placeholder="Vyhledat podle kategorie, značky nebo modelu vozidla...">
@@ -1377,7 +1475,10 @@
 
         <!-- Tab Content: Ceník RPS -->
         <div class="tab-content" id="tab-rps">
-            <p class="direct-page-validity">Platnost ceníku od 1. 12. 2023</p>
+            <div class="price-list-header">
+                <span class="price-list-subtitle">Přehled cen za pronájem náhradních vozidel podle kategorií</span>
+                <span class="price-list-validity">Platnost ceníku od 1. 12. 2023</span>
+            </div>
             <div class="controls">
                 <div class="search-box">
                     <input type="text" id="searchInputRPS" placeholder="Vyhledat podle kategorie, značky nebo modelu vozidla...">
@@ -1601,7 +1702,7 @@
           },
           {
             "kategorie": "SUV střední premium",
-            "znacka_typ": "Audi Q2 + Q3, BMW X1 + X2, Land Rover Range Rover Evoque + Defender, Mercedes-Benz ML + GLB, Porsche Macan, Volvo XC60 + XC70, Tesla Model Y, Leapmotor C10",
+            "znacka_typ": "Audi Q2 + Q3, BMW X1 + X2, Land Rover Evoque + Defender, Mercedes-Benz ML + GLB, Porsche Macan, Volvo XC60 + XC70, Tesla Model Y, Leapmotor C10",
             "cena_1_10_dni": 1500,
             "cena_11_30_dni": 1200
           },
@@ -1733,37 +1834,49 @@
 
         // Search functionality
         const searchInput = document.getElementById('searchInput');
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase().trim();
-            currentSearchTerm = this.value.trim(); // Store original case for highlighting
-            filterData(searchTerm);
-        });
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.trim();
+                currentSearchTerm = searchTerm; // Store original case for highlighting
+                filterData(searchTerm);
+            });
+        }
 
         function filterData(searchTerm) {
-            if (!searchTerm) {
+            if (!searchTerm || !searchTerm.trim()) {
                 filteredData = [...cenÝkData];
                 currentSearchTerm = '';
             } else {
-                const normalizedSearchTerm = removeDiacritics(searchTerm.toLowerCase());
-                // Split search term into words to search for each word separately
-                // This allows finding "audi a5" in "Audi A4 + A5"
-                const searchWords = normalizedSearchTerm.split(/\s+/).filter(word => word.length > 0);
+                // Normalize search term: remove diacritics and convert to lowercase
+                const normalizedSearchTerm = removeDiacritics(searchTerm.toLowerCase().trim());
+                // Split search term into tokens (words) - AND logic: all tokens must be present
+                const searchTokens = normalizedSearchTerm.split(/\s+/).filter(word => word.length > 0);
                 
-                filteredData = cenÝkData.filter(item => {
-                    const kategorie = removeDiacritics(item.kategorie.toLowerCase());
-                    const znacka = removeDiacritics(item.znacka_typ.toLowerCase());
-                    const combinedText = kategorie + ' ' + znacka;
-                    
-                    // Check if all search words are present in the combined text
-                    // This allows finding "audi a5" where "audi" is in brand and "a5" is in model
-                    if (searchWords.length > 1) {
-                        // Multiple words - all must be present somewhere in category or brand/model
-                        return searchWords.every(word => combinedText.includes(word));
-                    } else {
-                        // Single word - check if it appears anywhere
-                        return kategorie.includes(normalizedSearchTerm) || znacka.includes(normalizedSearchTerm);
-                    }
-                });
+                // If no valid tokens, show all data
+                if (searchTokens.length === 0) {
+                    filteredData = [...cenÝkData];
+                } else {
+                    // AND logic: filter items where ALL tokens are present
+                    filteredData = cenÝkData.filter(item => {
+                        // Normalize item data
+                        const normalizedKategorie = removeDiacritics(item.kategorie.toLowerCase());
+                        const normalizedZnacka = removeDiacritics(item.znacka_typ.toLowerCase());
+                        const combinedText = normalizedKategorie + ' ' + normalizedZnacka;
+                        
+                        // Check if ALL tokens are present in the combined text
+                        // This is strict AND logic - all tokens must be found
+                        let allTokensFound = true;
+                        for (let i = 0; i < searchTokens.length; i++) {
+                            const token = searchTokens[i];
+                            const tokenFound = combinedText.includes(token);
+                            if (!tokenFound) {
+                                allTokensFound = false;
+                                break; // If any token is missing, exclude this item
+                            }
+                        }
+                        return allTokensFound;
+                    });
+                }
             }
             
             // Apply current sort
@@ -2329,6 +2442,22 @@
         sortData('kategorie', 'asc');
         
         // ============================================
+        // Tab Description Management
+        // ============================================
+        const tabDescriptions = {
+            'direct': 'Zobrazuje aktuální sazby půjčovného, podle kterých se v současnosti řídíme. Slouží jako hlavní přehled pro likvidátory a KAPU při určování správné sazby pro konkrétní kategorii vozidla.',
+            'rps': 'Obsahuje smluvní sazby půjčovného pro společnost RPS. Používá se v případech, kdy bylo náhradní vozidlo zapůjčeno přes RPS a uplatňují se jejich specifické ceny.',
+            'historical': 'Umožňují zobrazit starší verze ceníků podle období, kdy platily. Hodí se při řešení škod, které se posuzují zpětně a je nutné použít sazby platné v dané době.'
+        };
+
+        function updateSubTabDescription(tabName) {
+            const subTabDescription = document.getElementById('subTabDescription');
+            if (subTabDescription && tabDescriptions[tabName]) {
+                subTabDescription.textContent = tabDescriptions[tabName];
+            }
+        }
+
+        // ============================================
         // Tab Switching Functionality
         // ============================================
         const tabButtons = document.querySelectorAll('.tab-button');
@@ -2354,6 +2483,9 @@
                     requestAnimationFrame(() => {
                         targetContent.classList.add('active');
                         
+                        // Update sub tab description
+                        updateSubTabDescription(targetTab);
+                        
                         // If switching to RPS tab, ensure table is updated
                         if (targetTab === 'rps' && typeof updateRPSTable === 'function') {
                             // Small delay to ensure DOM is updated
@@ -2366,15 +2498,18 @@
             });
         });
 
+        // Initialize sub tab description on page load
+        updateSubTabDescription('direct');
+
         // ============================================
         // Historical Price Lists - Easy to extend
         // ============================================
         const historicalPriceLists = [
-            { year: '2026', url: 'Historické ceníky/Ceník NV od 1.1.2026.pdf', filename: 'Ceník NV od 1.1.2026.pdf' },
-            { year: '2023', url: 'Historické ceníky/Ceník NV od 1-3-2023.pdf', filename: 'Ceník NV od 1-3-2023.pdf' },
-            { year: '2018', url: 'Historické ceníky/Ceník NV 2018 pro SSE a RPS.pdf', filename: 'Ceník NV 2018 pro SSE a RPS.pdf' },
-            { year: '2018', url: 'Historické ceníky/Ceník NV do 22-1-2018.PDF', filename: 'Ceník NV do 22-1-2018.pdf' },
-            { year: '2018', url: 'Historické ceníky/Ceník NV od 23-1-2018.pdf', filename: 'Ceník NV od 23-1-2018.pdf' }
+            { year: '2026', url: 'Historické ceníky/Ceník NV od 1. 1. 2026.pdf', filename: 'Ceník NV od 1. 1. 2026.pdf' },
+            { year: '2023', url: 'Historické ceníky/Ceník NV od 1. 3. 2023.pdf', filename: 'Ceník NV od 1. 3. 2023.pdf' },
+            { year: '2018', url: 'Historické ceníky/Ceník NV od 23. 1. 2018.pdf', filename: 'Ceník NV od 23. 1. 2018.pdf' },
+            { year: '2018', url: 'Historické ceníky/Ceník NV do 22. 1. 2018.PDF', filename: 'Ceník NV do 22. 1. 2018.pdf' },
+            { year: '2018', url: 'Historické ceníky/Ceník NV 2018 pro SSE a RPS.pdf', filename: 'Ceník NV 2018 pro SSE a RPS.pdf' }
             // Add more years here as needed - only add files that exist in "Historické ceníky" folder
         ];
 
@@ -2515,37 +2650,44 @@
         const searchInputRPS = document.getElementById('searchInputRPS');
         if (searchInputRPS) {
             searchInputRPS.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase().trim();
-                currentRPSSearchTerm = this.value.trim();
+                const searchTerm = this.value.trim();
+                currentRPSSearchTerm = searchTerm;
                 filterRPSData(searchTerm);
             });
         }
         
         function filterRPSData(searchTerm) {
-            if (!searchTerm) {
+            if (!searchTerm || !searchTerm.trim()) {
                 filteredRPSData = [...cenÝkRPSData];
                 currentRPSSearchTerm = '';
             } else {
-                const normalizedSearchTerm = removeDiacritics(searchTerm.toLowerCase());
-                // Split search term into words to search for each word separately
-                // This allows finding "audi a5" in "Audi A4 + A5"
-                const searchWords = normalizedSearchTerm.split(/\s+/).filter(word => word.length > 0);
+                // Normalize search term: remove diacritics and convert to lowercase
+                const normalizedSearchTerm = removeDiacritics(searchTerm.toLowerCase().trim());
+                // Split search term into tokens (words) - AND logic: all tokens must be present
+                const searchTokens = normalizedSearchTerm.split(/\s+/).filter(word => word.length > 0);
                 
-                filteredRPSData = cenÝkRPSData.filter(item => {
-                    const kategorie = removeDiacritics(item.kategorie.toLowerCase());
-                    const znacka = removeDiacritics(item.znacka_typ.toLowerCase());
-                    const combinedText = kategorie + ' ' + znacka;
-                    
-                    // Check if all search words are present in the combined text
-                    // This allows finding "audi a5" where "audi" is in brand and "a5" is in model
-                    if (searchWords.length > 1) {
-                        // Multiple words - all must be present somewhere in category or brand/model
-                        return searchWords.every(word => combinedText.includes(word));
-                    } else {
-                        // Single word - check if it appears anywhere
-                        return kategorie.includes(normalizedSearchTerm) || znacka.includes(normalizedSearchTerm);
-                    }
-                });
+                // If no valid tokens, show all data
+                if (searchTokens.length === 0) {
+                    filteredRPSData = [...cenÝkRPSData];
+                } else {
+                    // AND logic: filter items where ALL tokens are present
+                    filteredRPSData = cenÝkRPSData.filter(item => {
+                        // Normalize item data
+                        const normalizedKategorie = removeDiacritics(item.kategorie.toLowerCase());
+                        const normalizedZnacka = removeDiacritics(item.znacka_typ.toLowerCase());
+                        const combinedText = normalizedKategorie + ' ' + normalizedZnacka;
+                        
+                        // Check if ALL tokens are present in the combined text
+                        // This is strict AND logic - all tokens must be found
+                        for (let i = 0; i < searchTokens.length; i++) {
+                            const token = searchTokens[i];
+                            if (!combinedText.includes(token)) {
+                                return false; // If any token is missing, exclude this item
+                            }
+                        }
+                        return true; // All tokens found
+                    });
+                }
             }
             
             const [field, direction] = ['kategorie', 'asc'];

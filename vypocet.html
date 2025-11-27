@@ -464,6 +464,31 @@
             border-radius: 2px;
             animation: expandLine 0.6s ease-out 0.3s both;
         }
+
+        /* Tab Description Styles */
+        .main-tab-description {
+            font-family: 'DirectSans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            color: #6E7781;
+            line-height: 1.4;
+            text-align: left;
+            padding: 12px 0 16px 0;
+            margin-bottom: 0;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 40px;
+            padding-right: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .main-tab-description {
+                padding-left: 20px;
+                padding-right: 20px;
+                font-size: 13px;
+            }
+        }
         
         @keyframes expandLine {
             from {
@@ -1667,13 +1692,13 @@
             margin-bottom: 0;
         }
 
-        /* Print summary layout (used only for PDF/print) */
+        /* Print summary layout (used only for PDF/print) - styled like "Výroční dopis" */
         .print-summary {
             display: none;
-            font-family: 'Nunito Sans', 'DirectSans', sans-serif;
-            font-size: 12px;
+            font-family: 'DirectSans', sans-serif;
+            font-size: 14px;
             line-height: 1.6;
-            color: #004734;
+            color: #004033;
         }
         
         .print-summary-inner {
@@ -1683,206 +1708,236 @@
             padding: 0;
         }
         
+        /* Two-level header matching "Výroční dopis" - edge-to-edge, no container indentation */
         .print-summary-header {
+            background: #EEF4C2;
+            margin: 0 0 36px 0;
+            padding: 0;
+            border-radius: 0;
+            width: 100%;
+        }
+        
+        /* Level 1: Logo left, date right */
+        .print-header-level1 {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 18px; /* tightened space under yellow line for more compact header-to-content transition */
-            border-bottom: 1px solid #E2E2E2;
-            padding-bottom: 10px;
+            justify-content: space-between;
+            align-items: center;
+            padding: 28px 32px;
+            min-height: 80px;
         }
         
         .print-header-top {
             display: flex;
-            align-items: flex-start;
-            justify-content: flex-start;
-            margin-bottom: 12px; /* slightly tighter space under logo for better vizuální rovnováhu s nadpisem */
+            align-items: center;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .print-summary-header .print-logo-mini {
+            margin: 0;
+            padding: 0;
         }
         
         .print-summary-header .print-logo-mini img {
-            height: 40px; /* logo height approx. 40 px, keep proportions */
+            height: 55px;
             width: auto;
-            margin-top: -2px; /* jemně posunuto dolů o cca 2–3 px tak, aby optická osa loga lépe lícovala s nadpisem */
+            margin: 0;
+            padding: 0;
+            display: block;
         }
 
         .print-header-date {
-            font-size: 11px;
-            color: #7D7D7D;
+            font-size: 10px;
+            color: #004033;
+            font-weight: 500;
         }
 
+        /* Level 2: Document title - part of header, not content */
         .print-summary-title {
-            font-size: 18px;
+            font-size: 24px;
             font-weight: 700;
-            color: #004734;
-            text-align: center;
-            position: relative;
-            padding-bottom: 4px;
+            color: #004033;
+            text-align: left;
+            margin: 0;
+            padding: 24px 32px 32px 32px;
         }
         
         .print-summary-title::after {
-            content: '';
-            display: block;
-            width: 80px;
-            height: 2px;
-            background-color: #D7E56F;
-            margin: 4px auto 0; /* slightly reduced gap between title text and yellow line (was 6px) */
-            border-radius: 999px;
+            display: none;
         }
         
+        /* Light gray-green rounded boxes matching "Rozpis plateb" and "Platební údaje" */
         .print-section-box {
-            background: #FFFFFF;
-            border-radius: 8px;
-            padding: 14px 16px;
-            border: 1px solid #EAEAEA;
+            background: #F6FBEA;
+            border-radius: 12px;
+            padding: 28px 32px;
+            border: 1px solid #E6EEB8;
             margin-top: 0;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
+            box-shadow: 0 1px 3px rgba(0, 64, 51, 0.05);
         }
 
-        /* Optické oddělení mezi „Výsledná sazba“ a následující sekcí bez rozbití konzistentní mezery 24 px */
-        .print-section-box.print-section-box-highlight + .print-section-box {
-            border-top: 1px solid #EAEAEA; /* jemná dělicí linka mezi boxy */
-            padding-top: 18px;
-        }
-        
         .print-section-box-highlight {
-            background-color: #FAFBF9; /* light yellow highlight for key rate section */
+            background-color: #F6FBEA;
         }
 
-        /* Models-in-category box in print summary */
         .print-section-box-models {
-            background-color: #FBFCFA; /* slightly lighter background for better print contrast while keeping consistency with „Výsledná sazba“ */
-            margin-bottom: 20px; /* ~4 px tighter spacing under models section to better integrate with surrounding blocks (24 px → 20 px) */
+            background-color: #F6FBEA;
+            margin-bottom: 28px;
         }
 
         .print-models-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: #004734;
-            margin: 0 0 6px 0;
+            font-size: 17px;
+            font-weight: 600;
+            color: #004033;
+            margin: 0 0 10px 0;
         }
 
         .print-models-description {
-            font-size: 12px;
+            font-size: 15px;
             color: #7D7D7D;
-            margin: 0 0 10px 0;
-            line-height: 1.5;
+            margin: 0 0 14px 0;
+            line-height: 1.6;
         }
 
         .print-models-summary {
-            font-size: 12px;
-            color: #004734;
-            line-height: 1.5;
+            font-size: 15px;
+            color: #004033;
+            line-height: 1.6;
             margin: 0;
-            margin-top: -2px; /* subtle optical alignment tweak so first line of model list sits on same visual line as section title */
-            font-style: italic; /* models italic by default */
+            font-style: italic;
         }
 
         .print-models-summary strong {
-            font-weight: 600;   /* brand bold */
-            font-style: normal; /* brand not italic */
+            font-weight: 600;
+            font-style: normal;
         }
 
-        /* Extra visual separation for rental rate section in print summary –
-           oddělení mezi „Pronajímané vozidlo“ a „Výsledná sazba pronajímaného vozidla“ */
         .print-section-box-rental-rate {
-            border-top: 1px solid #EAEAEA;
-            padding-top: 18px;
-            margin-bottom: 28px; /* o 4 px větší mezera pod sekcí (24 px → 28 px) pro jasnější oddělení od „Doplňujících informací“ */
+            margin-bottom: 28px;
         }
 
         .print-section-box h2 {
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: #004734;
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #004033;
         }
 
         .print-row {
             display: flex;
             justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 4px;
+            gap: 24px;
+            margin-bottom: 14px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #E6EEB8;
+        }
+        
+        .print-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
         }
         
         .print-label {
             flex: 1;
             text-align: left;
+            font-size: 15px;
+            color: #004033;
         }
         
         .print-value {
             flex: 0 0 auto;
             text-align: right;
-            font-weight: 600;
-            color: #003E2F;
+            font-weight: 700;
+            font-size: 20px;
+            color: #004033;
         }
 
         .print-rate-table {
-            margin-top: 4px;
+            margin-top: 8px;
         }
 
         .print-rate-table .print-row {
-            padding-bottom: 3px;
-            margin-bottom: 5px;
-            border-bottom: 1px solid #E6E9E8;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #E6EEB8;
         }
 
         .print-rate-table .print-row:last-child {
             border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
         }
 
         .print-note {
-            margin-top: 4px;
-            font-size: 11px;
+            margin-top: 12px;
+            font-size: 13px;
             color: #7D7D7D;
+            line-height: 1.6;
         }
 
-        /* Dvou-sloupcové „Doplňující informace“ v tiskovém souhrnu */
+        /* Two-column "Doplňující informace" matching official letter style */
         .print-section-box ul.print-note {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr)); /* two balanced columns */
-            column-gap: 32px; /* horizontal gap between columns – keep as requested */
-            row-gap: 6px;
-            padding-left: 18px;
-            margin-top: 4px;
-            font-size: 12px;
-            line-height: 1.5; /* slightly tighter leading for more compact, professional print look */
-            color: #004734;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            column-gap: 40px;
+            row-gap: 8px;
+            padding-left: 20px;
+            margin-top: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #004033;
             list-style-position: outside;
-            align-items: start; /* ensure bullets in both columns share the same top offset */
+            align-items: start;
         }
         
         .print-section-box ul.print-note li {
-            margin-bottom: 0; /* rely on row-gap for consistent vertical rhythm between rows */
-            line-height: 1.65; /* lehce vyšší řádkování v tiskové verzi pro lepší čitelnost odstavců doplňujících informací */
+            margin-bottom: 0;
+            line-height: 1.6;
         }
 
         .print-section-box ul.print-note li::marker {
-            color: #CDE2B8;
+            color: #C4DE00;
+            font-size: 16px;
         }
 
         #printDiscountNote {
             font-style: italic;
-            color: #8A8F8D;
+            color: #7D7D7D;
         }
 
         .print-summary-footer {
-            margin-top: 44px; /* o ~8 px větší vzdálenost od doplňujících informací pro lepší optické vyvážení spodní části stránky */
-            padding: 0 12px;
+            margin-top: 48px;
+            padding: 0;
             background-color: transparent;
-            color: #7D7D7D;
-            font-size: 11px;
-            line-height: 1.5;
-            text-align: center;
+            color: #004033;
+            font-size: 1px;
+            line-height: 1.7;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            height: auto;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 40px;
         }
 
-        /* Datum výpočtu ve stejné vizuální úrovni jako zbytek řádku */
-        .print-summary-footer #printDate {
-            font-size: 11px;
-            font-weight: 400;
+        .print-summary-footer-left {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .print-summary-footer-right {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .print-summary-footer p {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.7;
+            color: #004033;
         }
 
         @media (max-width: 768px) {
@@ -1975,9 +2030,7 @@
             *,
             *::before,
             *::after {
-                box-shadow: none !important;
                 text-shadow: none !important;
-                background-image: none !important;
             }
 
             html,
@@ -1987,15 +2040,178 @@
 
             body {
                 background-color: #ffffff !important;
-                color: #004734 !important;
-                font-family: 'Nunito Sans', 'DirectSans', sans-serif !important;
-                font-size: 12px !important;
+                color: #004033 !important;
+                font-family: 'DirectSans', sans-serif !important;
+                font-size: 14px !important;
                 line-height: 1.6 !important;
             }
 
-            /* Slightly stronger weight for key numeric values in print to improve legibility on paper */
+            /* Print summary styles matching "Výroční dopis" */
+            .print-summary {
+                font-size: 14px !important;
+                color: #004033 !important;
+            }
+
+            /* Two-level header - edge-to-edge, no container indentation */
+            .print-summary-header {
+                background: #EEF4C2 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                margin: 0 0 36px 0 !important;
+                padding: 0 !important;
+                border-radius: 0 !important;
+                width: 100% !important;
+            }
+
+            /* Level 1: Logo left, date right */
+            .print-header-level1 {
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: center !important;
+                padding: 28px 32px !important;
+                min-height: 80px !important;
+            }
+
+            .print-header-top {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .print-summary-header .print-logo-mini {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .print-summary-header .print-logo-mini img {
+                height: 80px !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                display: block !important;
+            }
+
+            .print-header-date {
+                font-size: 11px !important;
+                color: #004033 !important;
+                font-weight: 500 !important;
+            }
+            #printDate {
+                font-size: 11px !important; 
+                color: #004033 !important;
+                font-weight: 500 !important;
+            }
+
+            /* Level 2: Document title - part of header */
+            .print-summary-title {
+                font-size: 24px !important;
+                font-weight: 700 !important;
+                color: #004033 !important;
+                margin: 0 !important;
+                padding: 24px 32px 32px 32px !important;
+            }
+
+            /* Light gray-green boxes matching "Rozpis plateb" and "Platební údaje" */
+            .print-section-box {
+                background: #FFFFFF !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                border-radius: 12px !important;
+                padding: 28px 32px !important;
+                border: 1px solid #E6EEB8 !important;
+                margin-bottom: 28px !important;
+                box-shadow: 0 1px 3px rgba(0, 64, 51, 0.05) !important;
+            }
+
+            .print-section-box h2 {
+                font-size: 17px !important;
+                font-weight: 600 !important;
+                color: #004033 !important;
+                margin-bottom: 20px !important;
+            }
+
+            .print-label {
+                font-size: 15px !important;
+                color: #004033 !important;
+            }
+
             .print-value {
-                font-weight: 650 !important;
+                font-weight: 700 !important;
+                font-size: 20px !important;
+                color: #004033 !important;
+            }
+
+            .print-row {
+                border-bottom: 1px solid #E6EEB8 !important;
+                padding-bottom: 14px !important;
+                margin-bottom: 14px !important;
+                gap: 24px !important;
+            }
+
+            .print-note {
+                font-size: 14px !important;
+                color: #7D7D7D !important;
+            }
+
+            .print-section-box ul.print-note {
+                font-size: 15px !important;
+                color: #004033 !important;
+            }
+
+            .print-models-title {
+                font-size: 17px !important;
+                font-weight: 600 !important;
+                color: #004033 !important;
+                margin-bottom: 10px !important;
+            }
+
+            .print-models-description {
+                font-size: 15px !important;
+                color: #7D7D7D !important;
+                margin-bottom: 14px !important;
+            }
+
+            .print-models-summary {
+                font-size: 15px !important;
+                color: #004033 !important;
+            }
+
+            .print-section-box ul.print-note li::marker {
+                color: #C4DE00 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .print-summary-footer {
+                font-size: 13px !important;
+                color: #004033 !important;
+                margin-top: 48px !important;
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: flex-start !important;
+                gap: 40px !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .print-summary-footer-left {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 4px !important;
+            }
+
+            .print-summary-footer-right {
+                text-align: right !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 4px !important;
+            }
+
+            .print-summary-footer p {
+                margin: 0 !important;
+                font-size: 13px !important;
+                line-height: 1.7 !important;
+                color: #004033 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
 
             /* Skrýt webovou hlavičku, navigaci, patičku a interaktivní prvky */
@@ -2057,6 +2273,13 @@
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
                 color: #004033 !important;
+            }
+
+            /* Ensure all print summary elements use exact colors */
+            .print-summary,
+            .print-summary * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
             }
 
             /* Webová patička se v tisku nezobrazuje */
@@ -2163,6 +2386,12 @@
             
             <h1 class="page-title">Výpočet půjčovného za náhradní vozidlo</h1>
 
+            <!-- Main Tab Description -->
+            <p class="main-tab-description">
+                Spočítá maximální možnou sazbu půjčovného podle parametrů poškozeného i pronajímaného vozidla. Zohledňuje rok uvedení do provozu a další faktory, takže získáte přesnou sazbu pro konkrétní situaci.
+Hodí se při řešení škod i při ověřování sazeb u konkrétních vozidel. Tato část je určena hlavně pro KAPU, klienty a případně servisy.
+            </p>
+
             <form id="calculationForm">
                 <!-- Poškozené vozidlo -->
                 <div class="form-section" id="damagedVehicleSection">
@@ -2171,21 +2400,21 @@
                         <div class="form-group autocomplete-select">
                             <label>Rok uvedení do provozu <span class="info-icon" data-tooltip="U vozidel starších než 8 let se sazba automaticky snižuje o 20 %.">ℹ️</span></label>
                             <div class="autocomplete-input-wrapper">
-                                <input type="text" id="rokProvozu" placeholder="Vyberte rok" autocomplete="off" required>
+                                <input type="text" id="rokProvozu" placeholder="Pište nebo vyberte rok" autocomplete="off" required>
                             </div>
                             <div class="autocomplete-dropdown" id="rokProvozuDropdown"></div>
                         </div>
                         <div class="form-group autocomplete-select">
                             <label>Značka</label>
                             <div class="autocomplete-input-wrapper">
-                                <input type="text" id="znackaPoskozene" placeholder="Vyberte značku" autocomplete="off">
+                                <input type="text" id="znackaPoskozene" placeholder="Pište nebo vyberte značku" autocomplete="off">
                             </div>
                             <div class="autocomplete-dropdown" id="znackaPoskozeneDropdown"></div>
                         </div>
                         <div class="form-group autocomplete-select">
                             <label>Model</label>
                             <div class="autocomplete-input-wrapper">
-                                <input type="text" id="modelPoskozene" placeholder="Vyberte model" autocomplete="off">
+                                <input type="text" id="modelPoskozene" placeholder="Pište nebo vyberte model" autocomplete="off">
                             </div>
                             <div class="autocomplete-dropdown" id="modelPoskozeneDropdown"></div>
                         </div>
@@ -2228,14 +2457,14 @@
                         <div class="form-group autocomplete-select">
                             <label>Značka</label>
                             <div class="autocomplete-input-wrapper">
-                                <input type="text" id="znackaPronajmene" placeholder="Vyberte značku" autocomplete="off">
+                                <input type="text" id="znackaPronajmene" placeholder="Pište nebo vyberte značku" autocomplete="off">
                             </div>
                             <div class="autocomplete-dropdown" id="znackaPronajmeneDropdown"></div>
                         </div>
                         <div class="form-group autocomplete-select">
                             <label>Model</label>
                             <div class="autocomplete-input-wrapper">
-                                <input type="text" id="modelPronajmene" placeholder="Vyberte model" autocomplete="off">
+                                <input type="text" id="modelPronajmene" placeholder="Pište nebo vyberte model" autocomplete="off">
                             </div>
                             <div class="autocomplete-dropdown" id="modelPronajmeneDropdown"></div>
                         </div>
@@ -2315,12 +2544,20 @@
             <!-- Clean print summary layout (visible only in print) -->
             <div id="printSummary" class="print-summary">
                 <div class="print-summary-inner">
+                    <!-- Two-level header: Level 1 (logo + date), Level 2 (title) -->
                     <div class="print-summary-header">
-                        <div class="print-header-top">
-                            <div class="print-logo-mini">
-                                <img src="Loga/Logo+pozitivní+RGB.png" alt="Direct pojišťovna">
+                        <!-- Level 1: Logo left, date right -->
+                        <div class="print-header-level1">
+                            <div class="print-header-top">
+                                <div class="print-logo-mini">
+                                    <img src="Loga/Logo+pozitivní+RGB.png" alt="Direct pojišťovna">
+                                </div>
+                            </div>
+                            <div class="print-header-date">
+                                Datum výpočtu: <span id="printDate"></span>
                             </div>
                         </div>
+                        <!-- Level 2: Document title -->
                         <div class="print-summary-title">Výpočet půjčovného za náhradní vozidlo</div>
                     </div>
 
@@ -2407,7 +2644,14 @@
                     </div>
 
                     <div class="print-summary-footer">
-                        Direct pojišťovna a.s.&nbsp;•&nbsp;info@direct.cz&nbsp;•&nbsp;www.direct.cz&nbsp;•&nbsp;+420 270 270 777&nbsp;•&nbsp;Datum výpočtu:&nbsp;<span id="printDate"></span>
+                        <div class="print-summary-footer-left">
+                            <p>info@direct.cz</p>
+                            <p>221 221 221</p>
+                        </div>
+                        <div class="print-summary-footer-right">
+                            <p>Direct pojišťovna, a.s., se sídlem Nové sady 996/25, Brno, 602 00, IČO: 250 73 958, DIČ: CZ 699 004 195</p>
+                            <p>zapsaná v obchodním rejstříku Krajského soudu v Brně, oddíl B, vložka 3365</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2592,7 +2836,7 @@
           },
           {
             "kategorie": "SUV střední premium",
-            "znacka_typ": "Audi Q2 + Q3, BMW X1 + X2, Land Rover Range Rover Evoque + Defender, Mercedes-Benz ML + GLB, Porsche Macan, Volvo XC60 + XC70, Tesla Model Y, Leapmotor C10",
+            "znacka_typ": "Audi Q2 + Q3, BMW X1 + X2, Land Rover Evoque + Defender, Mercedes-Benz ML + GLB, Porsche Macan, Volvo XC60 + XC70, Tesla Model Y, Leapmotor C10",
             "cena_1_10_dni": 1500,
             "cena_11_30_dni": 1200
           },
@@ -4080,18 +4324,7 @@
                 }
                 
                 // Update print date and vehicle info
-                const now = new Date();
-                const dateStr = now.toLocaleDateString('cs-CZ', { 
-                    day: '2-digit', 
-                    month: '2-digit', 
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                const printDateElement = document.getElementById('printDate');
-                if (printDateElement) {
-                    printDateElement.textContent = dateStr;
-                }
+                updatePrintDate();
                 
                 // Update print vehicle info
                 const printDamagedYear = document.getElementById('printDamagedYear');
@@ -4503,9 +4736,7 @@
             const dateStr = now.toLocaleDateString('cs-CZ', { 
                 day: '2-digit', 
                 month: '2-digit', 
-                year: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
+                year: 'numeric'
             });
             const printDateElement = document.getElementById('printDate');
             if (printDateElement) {

@@ -1,0 +1,2570 @@
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PDR kalkulačka</title>
+    <style>
+      /* Use the same DirectSans font family as the other application pages. */
+      @font-face {
+        font-family: "DirectSans";
+        src: url("Písma/DirectSans-Regular.otf") format("opentype");
+        font-weight: 400;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: "DirectSans";
+        src: url("Písma/DirectSans-Medium.otf") format("opentype");
+        font-weight: 500;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: "DirectSans";
+        src: url("Písma/DirectSans-Semibold.otf") format("opentype");
+        font-weight: 600;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: "DirectSans";
+        src: url("Písma/DirectSans-Bold.otf") format("opentype");
+        font-weight: 700;
+        font-style: normal;
+      }
+
+      :root {
+        --bg: #f4f6f8;
+        --card: #ffffff;
+        --text: #1f2933;
+        --muted: #5c6b78;
+        --line: #d8dee6;
+        --accent: #1b6b93;
+        --accent-hover: #155776;
+        --total: #0f3d57;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        color: var(--text);
+        background: var(--bg);
+        line-height: 1.45;
+      }
+
+      main {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 32px 16px 48px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 1.8rem;
+      }
+
+      .subtitle {
+        margin: 0 0 20px;
+        color: var(--muted);
+      }
+
+      .tab-radio {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 8px;
+        margin: 0 0 20px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .tab {
+        border: 0;
+        background: transparent;
+        color: var(--muted);
+        font: inherit;
+        padding: 10px 14px 12px;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+      }
+
+      #tab-calculator:checked ~ .tabs label[for="tab-calculator"],
+      #tab-pricelist:checked ~ .tabs label[for="tab-pricelist"] {
+        color: var(--accent);
+        font-weight: 600;
+        border-bottom-color: var(--accent);
+      }
+
+      .tab-panel {
+        display: none;
+      }
+
+      #tab-calculator:checked ~ #panel-calculator,
+      #tab-pricelist:checked ~ #panel-pricelist {
+        display: block;
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+
+      h2 {
+        margin: 0 0 16px;
+        font-size: 1.15rem;
+      }
+
+      .diameter-options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .diameter-options label {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 14px;
+        cursor: pointer;
+        background: #fafbfc;
+      }
+
+      .diameter-options input:checked + span {
+        font-weight: 600;
+        color: var(--accent);
+      }
+
+      .part-row {
+        display: grid;
+        grid-template-columns: minmax(140px, 1.4fr) 120px 130px auto;
+        gap: 12px;
+        align-items: end;
+        margin-bottom: 12px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .field span {
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      select,
+      input[type="number"] {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font: inherit;
+        background: #fff;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 8px;
+      }
+
+      .btn {
+        border: 0;
+        border-radius: 8px;
+        padding: 10px 16px;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .btn:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+      }
+
+      .btn-secondary {
+        background: #e8eef2;
+        color: var(--text);
+      }
+
+      .btn-ghost {
+        background: transparent;
+        color: #8a3b3b;
+        border: 1px solid #e3c4c4;
+        padding: 10px 12px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 10px 8px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+
+      th {
+        font-size: 0.85rem;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .num {
+        text-align: right;
+        white-space: nowrap;
+      }
+
+      .totals {
+        margin: 16px 0 0;
+        display: grid;
+        gap: 8px;
+      }
+
+      .totals div {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+      }
+
+      .totals .total {
+        margin-top: 6px;
+        padding-top: 10px;
+        border-top: 1px solid var(--line);
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--total);
+      }
+
+      .empty {
+        color: var(--muted);
+      }
+
+      .note {
+        margin-top: 16px;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      .calculation-note {
+        padding: 16px 18px;
+        border: 1px solid #d9e5b2;
+        border-radius: 8px;
+        background: #fbfdf2;
+      }
+
+      .calculation-note-title {
+        margin: 0 0 10px;
+        color: var(--total);
+        font-size: 0.9rem;
+        font-weight: 700;
+      }
+
+      .calculation-note-list {
+        display: grid;
+        gap: 7px;
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      .calculation-note-list li {
+        padding-left: 3px;
+      }
+
+      .calculation-note-list strong {
+        color: var(--total);
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      .result-card {
+        overflow: hidden;
+      }
+
+      .result-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 18px;
+      }
+
+      .result-heading h2 {
+        margin-bottom: 4px;
+      }
+
+      .result-kicker {
+        margin: 0 0 4px;
+        color: #6b8510;
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .result-description {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      .result-empty {
+        margin: 0;
+        padding: 10px 14px;
+        border: 1px solid #e6eeb8;
+        border-radius: 8px;
+        background: #fbfdf2;
+        color: var(--muted);
+        font-size: 0.85rem;
+      }
+
+      .result-table-wrap {
+        overflow-x: auto;
+        border: 1px solid #d9e5b2;
+        border-radius: 8px;
+      }
+
+      .result-table {
+        min-width: 760px;
+      }
+
+      .result-table thead th {
+        background: #f3f7df;
+        color: #527168;
+        font-size: 0.75rem;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+      }
+
+      .result-table tbody tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .result-table tbody tr:hover {
+        background: #fbfdf2;
+      }
+
+      .totals {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .totals div {
+        display: block;
+        min-height: 58px;
+        padding: 12px 14px;
+        border: 1px solid #e6eeb8;
+        border-radius: 8px;
+        background: #fbfdf2;
+      }
+
+      .totals div span:first-child {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+
+      .totals div strong {
+        display: block;
+        color: var(--total);
+        font-size: 1rem;
+      }
+
+      .totals .total {
+        grid-column: 1 / -1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: auto;
+        margin: 4px 0 0;
+        padding: 16px 18px;
+        border: 0;
+        background: var(--accent);
+      }
+
+      .totals .total span:first-child,
+      .totals .total span:last-child {
+        margin: 0;
+        color: var(--total);
+        font-size: 1rem;
+        font-weight: 700;
+      }
+
+      .totals .total span:last-child {
+        font-size: 1.35rem;
+        white-space: nowrap;
+      }
+
+      @media (max-width: 720px) {
+        .result-heading {
+          display: block;
+        }
+
+        .result-description {
+          margin-top: 8px;
+        }
+
+        .totals {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      .pricelist-table th,
+      .pricelist-table td {
+        white-space: nowrap;
+      }
+
+      .pricelist-table thead th {
+        position: sticky;
+        top: 0;
+        background: #fff;
+      }
+
+      .pricelist-intro {
+        margin: 0 0 16px;
+      }
+
+      .pricelist-block {
+        display: none;
+      }
+
+      .pricelist-diameters {
+        margin: 0 0 16px;
+      }
+
+      #pl-20:checked ~ .table-wrap .pricelist-block[data-d="20"],
+      #pl-30:checked ~ .table-wrap .pricelist-block[data-d="30"],
+      #pl-40:checked ~ .table-wrap .pricelist-block[data-d="40"] {
+        display: block;
+      }
+
+      #pl-20:checked ~ .diameter-options label[for="pl-20"],
+      #pl-30:checked ~ .diameter-options label[for="pl-30"],
+      #pl-40:checked ~ .diameter-options label[for="pl-40"] {
+        font-weight: 600;
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+
+      .hint {
+        margin: 10px 0 0;
+        font-size: 0.85rem;
+        color: var(--muted);
+      }
+
+      @media (max-width: 720px) {
+        .part-row {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .print-only {
+        display: none;
+      }
+
+      .print-header {
+        display: none;
+      }
+
+      @media print {
+        body {
+          background: #fff;
+          color: #000;
+        }
+
+        .site-header {
+          display: none !important;
+        }
+
+        main {
+          max-width: none;
+          padding: 0;
+        }
+
+        .tab-radio,
+        .tabs,
+        #pdr-form,
+        #panel-pricelist,
+        .page-title,
+        .subtitle,
+        #result-empty,
+        .note,
+        .no-print {
+          display: none !important;
+        }
+
+        #panel-calculator,
+        #result-content:not([hidden]) {
+          display: block !important;
+        }
+
+        .card {
+          border: 0;
+          padding: 0;
+          margin: 0;
+        }
+
+        .print-only {
+          display: block;
+          margin: 0 0 16px;
+          color: #333;
+        }
+
+        .print-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 24px;
+          margin-bottom: 24px;
+          padding-bottom: 12px;
+          border-bottom: 2px solid #c4de00;
+        }
+
+        .print-header img {
+          display: block;
+          width: 120px;
+          height: auto;
+        }
+
+        .print-header-title {
+          margin: 0;
+          color: #004033;
+          font-size: 1.2rem;
+          font-weight: 700;
+        }
+
+        .totals .total {
+          color: #000;
+        }
+      }
+
+      /* Sjednocení s hlavní aplikací car-rental-price-list */
+      body {
+        font-family: "DirectSans", sans-serif;
+        color: #004033;
+        background: #F6FBEA;
+      }
+
+      .site-header {
+        background:
+          linear-gradient(90deg, rgba(0,64,51,0.9), rgba(0,64,51,0.8)),
+          url("pozadí/direct-car-bg.jpg") center/cover no-repeat;
+        color: #fff;
+        padding: 30px 60px;
+        min-height: 90px;
+      }
+
+      .site-header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 30px;
+      }
+
+      .site-logo img {
+        display: block;
+        height: 75px;
+        width: auto;
+      }
+
+      .site-nav {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .site-nav a {
+        color: #fff;
+        text-decoration: none;
+        font-family: "DirectSans", sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        padding: 10px 20px;
+        border-radius: 999px;
+      }
+
+      .site-nav a:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .site-nav a.active {
+        color: #004033;
+        background: #C4DE00;
+        font-weight: 600;
+      }
+
+      main {
+        max-width: 1400px;
+        padding: 64px 40px 80px;
+      }
+
+      main > h1 {
+        color: #004033;
+        font-family: "DirectSans", sans-serif;
+      }
+
+      .subtitle {
+        color: #295A50;
+      }
+
+      .card {
+        border: 1px solid #E6EEB8;
+        border-top: 3px solid #C4DE00;
+        border-radius: 16px;
+        box-shadow: 0 2px 8px rgba(0, 64, 51, 0.06);
+      }
+
+      .btn-primary {
+        background: #004033;
+      }
+
+      .btn-primary:hover {
+        background: #295A50;
+      }
+
+      @media (max-width: 720px) {
+        .site-header {
+          padding: 20px;
+        }
+
+        .site-header-content {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .site-nav {
+          justify-content: flex-start;
+        }
+
+        main {
+          padding: 40px 20px 60px;
+        }
+      }
+
+      /* PDR workspace visual direction: a focused repair desk, not a generic form. */
+      :root {
+        --bg: #f3f7df;
+        --card: #ffffff;
+        --text: #173c35;
+        --muted: #527168;
+        --line: #d9e5b2;
+        --accent: #c4de00;
+        --accent-hover: #d8ed28;
+        --total: #004033;
+      }
+
+      body {
+        background:
+          radial-gradient(circle at 85% 0%, rgba(196, 222, 0, 0.2), transparent 28rem),
+          var(--bg);
+        color: var(--text);
+      }
+
+      .site-header {
+        padding: 22px 40px;
+        min-height: 86px;
+        border-bottom: 4px solid var(--accent);
+        background:
+          linear-gradient(105deg, rgba(0, 64, 51, 0.97), rgba(0, 64, 51, 0.84)),
+          url("pozadí/direct-car-bg.jpg") center/cover no-repeat;
+      }
+
+      .site-header-content {
+        max-width: 1180px;
+      }
+
+      .site-logo img {
+        height: 62px;
+      }
+
+      .site-nav a {
+        border-radius: 4px;
+        letter-spacing: 0.01em;
+      }
+
+      .site-nav a.active {
+        box-shadow: 0 0 0 2px rgba(196, 222, 0, 0.25);
+      }
+
+      main {
+        max-width: 1180px;
+        padding: 52px 32px 72px;
+      }
+
+      main::before {
+        display: block;
+        margin-bottom: 10px;
+        color: #6b8510;
+        content: "PDR / CENÍK OPRAV";
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+      }
+
+      main > h1 {
+        margin-bottom: 6px;
+        color: var(--total);
+        font-size: clamp(2rem, 4vw, 3.25rem);
+        letter-spacing: -0.045em;
+        line-height: 1;
+      }
+
+      .page-title {
+        margin-top: 32px;
+        margin-bottom: 20px;
+        color: #004033;
+        font-family: "DirectSans", sans-serif;
+        font-size: 34px;
+        font-weight: 700;
+        line-height: 1.6;
+        letter-spacing: -0.2px;
+        text-align: center;
+        position: relative;
+      }
+
+      .page-title::after {
+        content: "";
+        display: block;
+        width: 100px;
+        height: 3px;
+        margin: 10px auto 0;
+        background: linear-gradient(90deg, #d4e84d 0%, #c4de00 100%);
+        border-radius: 2px;
+        animation: expandLine 0.6s ease-out 0.3s both;
+      }
+
+      @keyframes expandLine {
+        from {
+          width: 0;
+          opacity: 0;
+          transform-origin: center;
+        }
+        to {
+          width: 100px;
+          opacity: 1;
+          transform-origin: center;
+        }
+      }
+
+      .subtitle {
+        max-width: 620px;
+        margin: 0 auto 32px;
+        color: var(--muted);
+        font-size: 1.05rem;
+        text-align: center;
+      }
+
+      .tabs {
+        gap: 0;
+        margin-bottom: 24px;
+        border-bottom: 2px solid #bdd27b;
+      }
+
+      .tab {
+        padding: 12px 18px 11px;
+        color: var(--muted);
+        font-size: 0.9rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      #tab-calculator:checked ~ .tabs label[for="tab-calculator"],
+      #tab-pricelist:checked ~ .tabs label[for="tab-pricelist"] {
+        color: var(--total);
+        border-bottom-color: var(--total);
+      }
+
+      #panel-calculator {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+        gap: 24px;
+        align-items: start;
+      }
+
+      #panel-calculator > form {
+        min-width: 0;
+      }
+
+      #panel-calculator > .card:last-child {
+        position: sticky;
+        top: 20px;
+        min-width: 0;
+      }
+
+      .card {
+        margin-bottom: 18px;
+        padding: 24px;
+        border: 1px solid var(--line);
+        border-top: 0;
+        border-left: 5px solid var(--accent);
+        border-radius: 5px;
+        box-shadow: 0 10px 30px rgba(0, 64, 51, 0.07);
+      }
+
+      h2 {
+        margin-bottom: 18px;
+        color: var(--total);
+        font-size: 1.25rem;
+        letter-spacing: -0.02em;
+      }
+
+      .diameter-options label {
+        border-color: var(--line);
+        border-radius: 4px;
+        background: #fbfdf2;
+        transition: border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
+      }
+
+      .diameter-options label:has(input:checked),
+      #pl-20:checked ~ .diameter-options label[for="pl-20"],
+      #pl-30:checked ~ .diameter-options label[for="pl-30"],
+      #pl-40:checked ~ .diameter-options label[for="pl-40"] {
+        border-color: var(--total);
+        background: var(--accent);
+        color: var(--total);
+        transform: translateY(-1px);
+      }
+
+      select,
+      input[type="number"] {
+        border-color: #c9d8a4;
+        border-radius: 4px;
+        color: var(--text);
+      }
+
+      select:focus,
+      input[type="number"]:focus,
+      button:focus-visible,
+      a:focus-visible,
+      input[type="radio"]:focus-visible + span {
+        outline: 3px solid rgba(196, 222, 0, 0.8);
+        outline-offset: 2px;
+      }
+
+      .part-row {
+        padding: 14px 0;
+        border-bottom: 1px solid #e7eed1;
+      }
+
+      .field span {
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      .btn {
+        border-radius: 4px;
+        font-weight: 700;
+        transition: background-color 160ms ease, transform 160ms ease;
+      }
+
+      .btn:hover:not(:disabled) {
+        transform: translateY(-1px);
+      }
+
+      .btn-primary {
+        background: var(--total);
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        background: #295a50;
+      }
+
+      .btn-secondary {
+        background: #e8efc7;
+        color: var(--total);
+      }
+
+      .btn-ghost {
+        color: #7a4545;
+        border-color: #e5c9c9;
+      }
+
+      .totals {
+        gap: 10px;
+        margin-top: 18px;
+        border-top: 0;
+      }
+
+      .totals div {
+        padding: 12px 14px;
+        border: 1px solid #e6eeb8;
+        border-radius: 8px;
+        background: #fbfdf2;
+      }
+
+      .totals .total {
+        margin: 4px 0 0;
+        padding: 16px 18px;
+        border: 0;
+        background: var(--accent);
+        color: var(--total);
+        font-size: 1.3rem;
+      }
+
+      .table-wrap {
+        border: 1px solid var(--line);
+      }
+
+      .pricelist-table thead th {
+        background: var(--total);
+        color: #fff;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+      }
+
+      .pricelist-table tbody tr:nth-child(even) {
+        background: #fbfdf4;
+      }
+
+      .pricelist-table tbody tr:hover {
+        background: #eef6c9;
+      }
+
+      @media (max-width: 860px) {
+        #panel-calculator {
+          display: block;
+        }
+
+        #panel-calculator > .card:last-child {
+          position: static;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+
+        main::before {
+          display: none;
+        }
+
+        #panel-calculator {
+          display: block !important;
+        }
+
+        #panel-calculator > .card:last-child {
+          position: static;
+        }
+      }
+
+      /* Second pass: quiet, practical composition for the calculator itself. */
+      body {
+        background: #f6fbea;
+      }
+
+      .site-header {
+        padding: 30px 60px;
+        min-height: 90px;
+        border-bottom: 0;
+      }
+
+      .site-logo img {
+        height: 75px;
+      }
+
+      .site-nav a {
+        border-radius: 999px;
+        letter-spacing: normal;
+      }
+
+      main {
+        max-width: 960px;
+        padding: 44px 16px 64px;
+      }
+
+      main::before {
+        display: none;
+      }
+
+      main > h1 {
+        margin-bottom: 8px;
+        font-size: 1.8rem;
+        letter-spacing: normal;
+        line-height: 1.2;
+      }
+
+      .subtitle {
+        max-width: none;
+        margin-bottom: 20px;
+        font-size: 1rem;
+      }
+
+      .tabs {
+        gap: 8px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #d9e5b2;
+      }
+
+      .tab {
+        padding: 10px 14px 12px;
+        font-size: 1rem;
+        letter-spacing: normal;
+        text-transform: none;
+      }
+
+      #panel-calculator {
+        display: block;
+      }
+
+      #panel-calculator > .card:last-child {
+        position: static;
+      }
+
+      .card {
+        margin-bottom: 20px;
+        padding: 20px;
+        border: 1px solid #e6eeb8;
+        border-top: 3px solid #c4de00;
+        border-left: 1px solid #e6eeb8;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 64, 51, 0.06);
+      }
+
+      h2 {
+        margin-bottom: 16px;
+        font-size: 1.15rem;
+        letter-spacing: normal;
+      }
+
+      .diameter-options label {
+        border-color: #d9e5b2;
+        border-radius: 8px;
+        background: #fafbfc;
+        transform: none;
+      }
+
+      .diameter-options label:has(input:checked) {
+        border-color: #c4de00;
+        background: #f8fdd7;
+        transform: none;
+      }
+
+      .part-row {
+        padding: 0;
+        border-bottom: 0;
+      }
+
+      .field span {
+        font-size: 0.85rem;
+        font-weight: 400;
+        letter-spacing: normal;
+        text-transform: none;
+      }
+
+      .btn {
+        border-radius: 8px;
+        font-weight: 400;
+      }
+
+      .btn-primary {
+        background: #004033;
+      }
+
+      .btn-secondary {
+        background: #e8eef2;
+        color: #173c35;
+      }
+
+      .btn:hover:not(:disabled) {
+        transform: none;
+      }
+
+      .totals {
+        gap: 10px;
+        margin-top: 18px;
+        border-top: 0;
+      }
+
+      .totals div {
+        padding: 12px 14px;
+        border: 1px solid #e6eeb8;
+        border-radius: 8px;
+        background: #fbfdf2;
+      }
+
+      .totals .total {
+        margin: 4px 0 0;
+        padding: 16px 18px;
+        border-top: 0;
+        background: var(--accent);
+        font-size: 1.3rem;
+      }
+
+      .table-wrap {
+        border: 0;
+      }
+
+      .pricelist-table thead th {
+        background: #fff;
+        color: #527168;
+        letter-spacing: normal;
+        text-transform: none;
+      }
+
+      .pricelist-table tbody tr:nth-child(even),
+      .pricelist-table tbody tr:hover {
+        background: transparent;
+      }
+
+      @media (max-width: 720px) {
+        .site-header {
+          padding: 20px;
+        }
+
+        main {
+          padding: 40px 20px 60px;
+        }
+      }
+
+      /* Match the field interaction language used by the rental calculator. */
+      select,
+      input[type="number"] {
+        font-family: "DirectSans", sans-serif;
+        font-size: 14px;
+        line-height: 1.6;
+        letter-spacing: -0.2px;
+        color: #1e1e1e;
+        background-color: #fff;
+        border-radius: 10px;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+      }
+
+      select {
+        appearance: none;
+        -webkit-appearance: none;
+        padding: 10px 44px 10px 12px;
+        border: 1px solid #e2e2e2;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23004033' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 18px center;
+        background-size: 14px 14px;
+        cursor: pointer;
+      }
+
+      input[type="number"] {
+        padding: 12px 14px;
+        border: 0;
+        border-bottom: 1px solid #e0e0e0;
+        border-radius: 12px;
+      }
+
+      select:hover,
+      input[type="number"]:hover {
+        border-color: #b9cf00;
+      }
+
+      input[type="number"]:hover {
+        transform: translateY(-1px);
+      }
+
+      select:focus,
+      input[type="number"]:focus {
+        outline: none;
+        border-color: #b9cf00;
+        box-shadow: 0 4px 12px rgba(185, 207, 0, 0.15), 0 0 0 3px rgba(185, 207, 0, 0.1);
+      }
+
+      input[type="number"]:focus {
+        border: 0;
+        border-bottom: 2px solid #b9cf00;
+        transform: translateY(-1px);
+      }
+
+      select:focus-visible,
+      input[type="number"]:focus-visible {
+        outline: 2px solid #b9cf00;
+        outline-offset: 2px;
+      }
+
+      select:disabled,
+      input[type="number"]:disabled {
+        background-color: #f5f5f5;
+        border-color: #e0e0e0;
+        cursor: not-allowed;
+        opacity: 0.6;
+        box-shadow: none;
+      }
+
+      .pdr-select {
+        position: relative;
+        width: 100%;
+      }
+
+      .pdr-native-select {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+
+      .pdr-select-trigger {
+        position: relative;
+        width: 100%;
+        min-height: 46px;
+        padding: 12px 42px 12px 14px;
+        border: 0;
+        border-bottom: 1px solid #e0e0e0;
+        border-radius: 12px;
+        background: #fff;
+        color: #6e7781;
+        font: 400 16px/1.6 "DirectSans", sans-serif;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .pdr-select-trigger::after {
+        position: absolute;
+        top: 50%;
+        right: 18px;
+        width: 14px;
+        height: 14px;
+        content: "";
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") center/contain no-repeat;
+        transform: translateY(-50%);
+        transition: transform 0.2s ease;
+      }
+
+      .pdr-select-trigger:hover {
+        border-bottom-color: #b9cf00;
+        transform: translateY(-1px);
+      }
+
+      .pdr-select.open .pdr-select-trigger,
+      .pdr-select-trigger:focus-visible {
+        outline: none;
+        border-bottom: 2px solid #b9cf00;
+        box-shadow: 0 4px 12px rgba(185, 207, 0, 0.15), 0 0 0 3px rgba(185, 207, 0, 0.1);
+        transform: translateY(-1px);
+      }
+
+      .pdr-select.open .pdr-select-trigger::after {
+        transform: translateY(-50%) rotate(180deg);
+      }
+
+      .pdr-select-menu {
+        position: absolute;
+        z-index: 20;
+        top: calc(100% + 4px);
+        right: 0;
+        left: 0;
+        display: none;
+        max-height: 198px;
+        overflow-y: auto;
+        padding: 4px 0;
+        border: 1px solid #e2e2e2;
+        border-radius: 0 0 10px 10px;
+        background: #fff;
+        box-shadow: 0 8px 18px rgba(0, 64, 51, 0.16);
+      }
+
+      .pdr-select.open .pdr-select-menu {
+        display: block;
+      }
+
+      .pdr-select-option {
+        display: block;
+        width: 100%;
+        padding: 11px 14px;
+        border: 0;
+        border-left: 3px solid transparent;
+        background: #fff;
+        color: #004033;
+        font: 400 16px/1.4 "DirectSans", sans-serif;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .pdr-select-option:hover,
+      .pdr-select-option[aria-selected="true"] {
+        border-left-color: #c4de00;
+        background: #f6f9e8;
+      }
+
+      .pdr-select-menu::-webkit-scrollbar {
+        width: 9px;
+      }
+
+      .pdr-select-menu::-webkit-scrollbar-thumb {
+        border-radius: 8px;
+        background: #8c8c8c;
+      }
+
+      .part-picker-title {
+        margin: 0 0 10px;
+        color: #527168;
+        font-size: 0.85rem;
+      }
+
+      .part-picker {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+
+      .part-choice {
+        border: 1px solid #d9e5b2;
+        border-radius: 8px;
+        padding: 11px 12px;
+        background: #fbfdf2;
+        color: #173c35;
+        font: inherit;
+        cursor: pointer;
+        text-align: left;
+        transition: border-color 0.15s, background 0.15s, transform 0.15s;
+      }
+
+      .part-choice:hover {
+        border-color: #b9cf00;
+        background: #f6f9e8;
+        transform: translateY(-1px);
+      }
+
+      .selected-parts-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .selected-parts-header h3 {
+        margin: 0;
+        color: #004033;
+        font-size: 0.95rem;
+      }
+
+      .selected-count {
+        color: #527168;
+        font-size: 0.85rem;
+      }
+
+      .part-number {
+        display: grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #e8efc7;
+        color: #004033;
+        font-weight: 700;
+      }
+
+      .part-row {
+        grid-template-columns: 34px minmax(140px, 1.4fr) 120px 130px auto;
+        gap: 12px;
+        align-items: end;
+      }
+
+      @media (max-width: 720px) {
+        .part-picker {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .part-row {
+          grid-template-columns: 1fr;
+        }
+
+        .part-number {
+          display: none;
+        }
+      }
+
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .site-header {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+          linear-gradient(90deg, rgba(185, 207, 0, 0.1) 0%, transparent 100%),
+          linear-gradient(90deg, rgba(0, 64, 51, 0.9) 0%, rgba(0, 64, 51, 0.8) 50%, rgba(0, 64, 51, 0.9) 100%),
+          url("pozadí/direct-car-bg.jpg") center/cover no-repeat;
+        background-blend-mode: normal, normal, normal;
+        padding: 30px 60px;
+        min-height: 90px;
+        border-bottom: 0;
+      }
+
+      .site-header::before {
+        position: absolute;
+        inset: 0;
+        content: "";
+        background: rgba(0, 64, 51, 0.8);
+        z-index: 0;
+      }
+
+      .site-header-content {
+        position: relative;
+        z-index: 1;
+        max-width: 1400px;
+        width: 100%;
+        gap: 50px;
+      }
+
+      .site-logo img {
+        height: 75px;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+      }
+
+      .site-nav {
+        gap: 30px;
+      }
+
+      .site-nav a {
+        padding: 10px 26px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      }
+
+      .site-nav a:hover {
+        transform: translateY(-2px);
+      }
+
+      .site-nav a.active {
+        box-shadow: 0 2px 6px rgba(0, 64, 51, 0.15);
+      }
+
+      main {
+        flex: 1;
+      }
+
+      .footer {
+        display: flex;
+        position: relative;
+        z-index: 1;
+        align-items: center;
+        justify-content: space-between;
+        gap: 50px;
+        width: 100%;
+        margin-top: 20px;
+        padding: 40px 60px;
+        border-top: 3px solid rgba(185, 207, 0, 0.9);
+        background: linear-gradient(90deg, #004033 0%, #015b48 100%);
+        box-shadow: 0 -4px 8px rgba(0, 64, 51, 0.08);
+        color: rgba(255, 255, 255, 0.9);
+        font: 13px/1.7 "DirectSans", sans-serif;
+        letter-spacing: 0.1px;
+      }
+
+      .footer-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 50px;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .footer-left {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        text-align: left;
+      }
+
+      .footer-left span,
+      .footer-right,
+      .footer-right p {
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .footer-right {
+        text-align: right;
+        line-height: 1.6;
+      }
+
+      .footer-right p {
+        margin: 0;
+      }
+
+      .footer a {
+        color: #c4de00;
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 768px) {
+        .footer {
+          padding: 30px 20px;
+        }
+
+        .footer-content {
+          align-items: flex-start;
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .footer-right {
+          text-align: left;
+        }
+      }
+
+      .pdr-workspace {
+        display: grid;
+        grid-template-columns: minmax(270px, 1fr) minmax(360px, 1.65fr) minmax(220px, 0.8fr);
+        min-height: 500px;
+        overflow: hidden;
+        border: 1px solid #303030;
+        background: #202020;
+        color: #d2d2d2;
+      }
+
+      .pdr-parts-panel,
+      .pdr-help-panel {
+        padding: 16px;
+        background: #242424;
+      }
+
+      .pdr-parts-panel {
+        border-right: 1px solid #373737;
+      }
+
+      .pdr-help-panel {
+        border-left: 1px solid #373737;
+        font-size: 0.8rem;
+      }
+
+      .pdr-parts-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 6px;
+        table-layout: fixed;
+      }
+
+      .pdr-parts-table .part-row {
+        display: table-row;
+      }
+
+      .pdr-parts-table .remove-part {
+        display: none;
+      }
+
+      .pdr-parts-table th {
+        padding: 8px 4px;
+        border-bottom: 1px solid #3e3e3e;
+        color: #f2f2f2;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-align: center;
+        text-transform: uppercase;
+      }
+
+      .pdr-parts-table th:first-child {
+        width: 42%;
+        text-align: left;
+      }
+
+      .pdr-parts-table td {
+        height: 40px;
+        padding: 0 5px;
+        border: 0;
+        color: #a9a9a9;
+        font-size: 0.72rem;
+      }
+
+      .pdr-parts-table td:first-child {
+        padding-left: 0;
+      }
+
+      .pdr-parts-table td:last-child {
+        padding-right: 0;
+      }
+
+      .pdr-parts-table td:first-child {
+        overflow: hidden;
+        text-align: right;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .pdr-parts-table input[type="number"] {
+        width: 100%;
+        height: 30px;
+        padding: 2px 5px;
+        border: 1px solid #383838;
+        border-radius: 0;
+        background: #171717;
+        color: #f0f0f0;
+        text-align: center;
+      }
+
+      .pdr-parts-table .part-diameter {
+        display: none;
+      }
+
+      .diameter-cycle {
+        width: 100%;
+        min-width: 64px;
+        height: 34px;
+        padding: 2px 4px;
+        border: 1px solid #d9e5b2;
+        border-radius: 6px;
+        background: #fbfdf2;
+        color: #173c35;
+        font: inherit;
+        cursor: pointer;
+      }
+
+      .diameter-cycle:hover {
+        border-color: #b9cf00;
+        background: #f6f9e8;
+      }
+
+      .pdr-parts-table .pdr-select {
+        min-width: 0;
+      }
+
+      .pdr-parts-table .pdr-native-select {
+        display: none;
+      }
+
+      .pdr-parts-table .pdr-select-trigger {
+        min-height: 30px;
+        padding: 3px 18px 3px 4px;
+        border: 1px solid #383838;
+        border-radius: 0;
+        background: #171717;
+        color: #f0f0f0;
+        font-size: 0.7rem;
+      }
+
+      .pdr-parts-table .pdr-select-trigger::after {
+        right: 5px;
+        width: 8px;
+        height: 8px;
+        filter: invert(1);
+      }
+
+      .pdr-parts-table .pdr-select-menu {
+        font-size: 0.75rem;
+      }
+
+      .damage-flag {
+        display: grid;
+        place-items: center;
+        width: 22px;
+        height: 22px;
+        margin: auto;
+        border: 1px solid #383838;
+        border-radius: 2px;
+        background: #171717;
+        color: #8c8c8c;
+        cursor: pointer;
+      }
+
+      .damage-flag input {
+        position: absolute;
+        opacity: 0;
+      }
+
+      .damage-flag:has(input:checked) {
+        border-color: #c4de00;
+        background: #4b5200;
+        color: #c4de00;
+      }
+
+      .damage-flag span {
+        font-size: 0.7rem;
+      }
+
+      .pdr-car-panel {
+        position: relative;
+        display: grid;
+        place-items: center;
+        min-height: 500px;
+        padding: 30px;
+        background:
+          radial-gradient(ellipse at center, #343434 0%, #1b1b1b 68%),
+          #1b1b1b;
+      }
+
+      .pdr-car {
+        position: relative;
+        width: min(90%, 420px);
+        height: 190px;
+        transform: skewX(-8deg);
+        border: 4px solid #bcbcbc;
+        border-radius: 44% 30% 16% 16%;
+        background: linear-gradient(160deg, #fafafa 0%, #d4d4d4 58%, #a8a8a8 100%);
+        box-shadow: 0 18px 0 -5px #111, 0 25px 25px rgba(0, 0, 0, 0.65);
+      }
+
+      .pdr-car::before,
+      .pdr-car::after {
+        position: absolute;
+        bottom: -34px;
+        width: 54px;
+        height: 54px;
+        border: 10px solid #aaa;
+        border-radius: 50%;
+        background: #222;
+        box-shadow: inset 0 0 0 5px #555;
+        content: "";
+      }
+
+      .pdr-car::before {
+        left: 56px;
+      }
+
+      .pdr-car::after {
+        right: 54px;
+      }
+
+      .pdr-car-cabin {
+        position: absolute;
+        top: 18px;
+        right: 12%;
+        left: 24%;
+        height: 72px;
+        border: 3px solid #8d8d8d;
+        border-radius: 48% 45% 8% 8%;
+        background: linear-gradient(90deg, #4e5555, #d9dddd 48%, #4e5555);
+      }
+
+      .pdr-car-door {
+        position: absolute;
+        top: 92px;
+        left: 32%;
+        width: 27%;
+        height: 68px;
+        border: 2px solid #a0a0a0;
+        background: #dcdcdc;
+      }
+
+      .pdr-car-door.active {
+        background: #d32121;
+      }
+
+      .pdr-help-title {
+        margin: 0 0 16px;
+        color: #969696;
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .pdr-help-panel h3 {
+        margin: 14px 0 3px;
+        color: #f4f4f4;
+        font-size: 0.78rem;
+      }
+
+      .pdr-help-panel p {
+        margin: 0;
+        color: #929292;
+        line-height: 1.4;
+      }
+
+      @media (max-width: 980px) {
+        .pdr-workspace {
+          grid-template-columns: minmax(260px, 1fr) minmax(300px, 1.2fr);
+        }
+
+        .pdr-help-panel {
+          grid-column: 1 / -1;
+          border-top: 1px solid #373737;
+          border-left: 0;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .pdr-workspace {
+          display: block;
+        }
+
+        .pdr-car-panel {
+          min-height: 300px;
+        }
+
+        .pdr-parts-panel,
+        .pdr-help-panel {
+          border: 0;
+        }
+      }
+
+      /* Direct brand treatment for the fixed damage-entry workspace. */
+      .pdr-workspace {
+        border-color: #d9e5b2;
+        border-radius: 12px;
+        background: #f6fbea;
+        color: #173c35;
+        box-shadow: 0 8px 24px rgba(0, 64, 51, 0.08);
+      }
+
+      .pdr-parts-panel {
+        border-right-color: #e6eeb8;
+        background: #fff;
+      }
+
+      .pdr-parts-table th {
+        border-bottom-color: #d9e5b2;
+        color: #004033;
+      }
+
+      .pdr-parts-table td {
+        border-bottom-color: #edf2dc;
+        color: #527168;
+      }
+
+      .pdr-parts-table input[type="number"],
+      .pdr-parts-table .pdr-select-trigger {
+        border-color: #d9e5b2;
+        background: #fbfdf2;
+        color: #173c35;
+      }
+
+      .pdr-parts-table .part-label {
+        display: block;
+        overflow: hidden;
+        color: #527168;
+        font-size: 0.75rem;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .pdr-parts-table .part-count {
+        height: 34px;
+        border: 1px solid #d9e5b2;
+        border-radius: 6px;
+        background: #fff;
+        color: #173c35;
+      }
+
+      .pdr-parts-table .part-name {
+        display: none;
+      }
+
+      .pdr-parts-table .pdr-select-trigger::after {
+        filter: none;
+      }
+
+      .pdr-parts-table .pdr-select-option:hover,
+      .pdr-parts-table .pdr-select-option[aria-selected="true"] {
+        background: #f6f9e8;
+      }
+
+      .damage-flag {
+        border-color: #d9e5b2;
+        background: #fbfdf2;
+        color: #527168;
+      }
+
+      .damage-flag:has(input:checked) {
+        border-color: #004033;
+        background: #c4de00;
+        color: #004033;
+      }
+
+      .damage-flag span {
+        visibility: hidden;
+      }
+
+      .damage-flag:has(input:checked) span {
+        visibility: visible;
+      }
+
+      .pdr-car-panel {
+        background:
+          radial-gradient(ellipse at center, #17614f 0%, #004033 72%),
+          #004033;
+      }
+
+      .pdr-3d-stage {
+        position: relative;
+        width: 100%;
+        min-height: 440px;
+        overflow: hidden;
+        border-radius: 8px;
+        cursor: grab;
+      }
+
+      .pdr-3d-stage:active {
+        cursor: grabbing;
+      }
+
+      .pdr-3d-stage canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-height: 440px;
+      }
+
+      .pdr-reference-image {
+        display: block;
+        width: 100%;
+        height: 100%;
+        min-height: 440px;
+        object-fit: contain;
+        user-select: none;
+      }
+
+      .pdr-model-status {
+        position: absolute;
+        top: 14px;
+        left: 14px;
+        max-width: 220px;
+        padding: 8px 11px;
+        border: 1px solid rgba(196, 222, 0, 0.45);
+        border-radius: 6px;
+        background: rgba(0, 64, 51, 0.82);
+        color: #fff;
+        font-size: 0.78rem;
+        pointer-events: none;
+      }
+
+      .pdr-model-status[data-state="error"] {
+        border-color: rgba(255, 170, 170, 0.7);
+        background: rgba(91, 25, 25, 0.88);
+      }
+
+      .pdr-focus-indicator {
+        position: absolute;
+        right: 14px;
+        bottom: 14px;
+        max-width: 220px;
+        padding: 8px 11px;
+        border-radius: 6px;
+        background: rgba(196, 222, 0, 0.92);
+        color: #004033;
+        font-size: 0.75rem;
+        font-weight: 700;
+        line-height: 1.4;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(4px);
+        transition: opacity 160ms ease, transform 160ms ease;
+      }
+
+      .pdr-focus-indicator.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .pdr-car {
+        box-shadow: 0 18px 0 -5px #c4de00, 0 25px 25px rgba(0, 0, 0, 0.35);
+      }
+
+      .pdr-help-panel {
+        border-left-color: #e6eeb8;
+        background: #fbfdf2;
+      }
+
+      .pdr-help-title {
+        color: #6b8510;
+      }
+
+      .pdr-help-panel h3 {
+        color: #004033;
+      }
+
+      .pdr-help-panel p {
+        color: #527168;
+      }
+
+      #add-part {
+        display: none;
+      }
+
+      main {
+        max-width: 1400px;
+      }
+
+      .pdr-workspace {
+        grid-template-columns: minmax(430px, 1.15fr) minmax(460px, 1.65fr) minmax(280px, 0.8fr);
+      }
+
+      .pdr-parts-panel {
+        min-width: 430px;
+        padding: 20px;
+      }
+
+      .pdr-parts-table {
+        min-width: 390px;
+        border-spacing: 8px 6px;
+      }
+
+      .pdr-parts-table th:first-child {
+        width: 31%;
+        text-align: center;
+      }
+
+      .pdr-parts-table th:nth-child(2) {
+        width: 22%;
+      }
+
+      .pdr-parts-table th:nth-child(3) {
+        width: 22%;
+      }
+
+      .pdr-parts-table th:nth-child(4),
+      .pdr-parts-table th:nth-child(5) {
+        width: 12.5%;
+      }
+
+      .pdr-parts-table td {
+        height: 40px;
+        padding: 0;
+        vertical-align: middle;
+      }
+
+      .pdr-parts-table td:first-child {
+        padding-left: 0;
+      }
+
+      .pdr-parts-table td:last-child {
+        padding-right: 0;
+      }
+
+      .pdr-parts-table input[type="number"],
+      .diameter-cycle {
+        width: 100%;
+        min-width: 0;
+        height: 34px;
+      }
+
+      .pdr-parts-table .field {
+        width: 100%;
+      }
+
+      .pdr-parts-table .damage-flag {
+        width: 34px;
+        height: 34px;
+        margin: 0 auto;
+      }
+
+      .pdr-parts-table .part-label {
+        text-align: center;
+      }
+
+      .pdr-parts-table .part-count.has-value,
+      .pdr-parts-table .diameter-cycle.is-selected {
+        border-color: #004033;
+        background: #f0f7c9;
+        box-shadow: 0 0 0 2px rgba(196, 222, 0, 0.35);
+        color: #004033;
+        font-weight: 700;
+      }
+
+      @media (max-width: 1220px) {
+        .pdr-workspace {
+          grid-template-columns: minmax(410px, 1fr) minmax(430px, 1.1fr);
+        }
+
+        .pdr-help-panel {
+          grid-column: 1 / -1;
+          border-top: 1px solid #e6eeb8;
+          border-left: 0;
+        }
+      }
+
+      @media (max-width: 900px) {
+        main {
+          padding-right: 20px;
+          padding-left: 20px;
+        }
+
+        .pdr-workspace {
+          display: block;
+          overflow-x: auto;
+        }
+
+        .pdr-parts-panel {
+          min-width: 460px;
+        }
+
+        .pdr-car-panel {
+          min-height: 360px;
+        }
+
+        .pdr-3d-stage,
+        .pdr-3d-stage canvas,
+        .pdr-reference-image {
+          min-height: 320px;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .totals {
+          grid-template-columns: 1fr;
+        }
+
+        .totals .total {
+          grid-column: auto;
+          display: block;
+        }
+
+        .totals .total span:last-child {
+          display: block;
+          margin-top: 6px;
+        }
+      }
+
+      /* Present the calculation summary as an invoice-style breakdown. */
+      .totals {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        margin-top: 24px;
+        border-top: 1px solid #d9e5b2;
+      }
+
+      .totals > div,
+      .totals .total {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        width: 100%;
+        min-height: 52px;
+        margin: 0;
+        padding: 12px 4px;
+        border: 0;
+        border-bottom: 1px solid #e7eed1;
+        border-radius: 0;
+        background: transparent;
+      }
+
+      .totals > div span:first-child {
+        margin: 0;
+        color: #527168;
+        font-size: 0.85rem;
+      }
+
+      .totals > div strong,
+      .totals .total span:last-child {
+        color: var(--total);
+        font-size: 1rem;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .totals .total {
+        min-height: 64px;
+        margin-top: 10px;
+        padding: 16px;
+        border: 0;
+        border-radius: 8px;
+        background: #c4de00;
+      }
+
+      .totals .total span:first-child,
+      .totals .total span:last-child {
+        margin: 0;
+        color: var(--total);
+        font-size: 1.05rem;
+        font-weight: 700;
+      }
+
+      .totals .total span:last-child {
+        font-size: 1.35rem;
+      }
+
+      /* Keep the PDR navigation consistent with the other application pages. */
+      .site-nav a,
+      .site-nav a:visited {
+        color: #fff;
+        font-family: "DirectSans", sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: normal;
+        line-height: normal;
+        opacity: 1;
+        padding: 10px 26px;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        transition: 0.2s ease;
+      }
+
+      .site-nav a.active,
+      .site-nav a.active:visited {
+        background: #c4de00;
+        color: #004033;
+        font-weight: 600;
+        transform: translateY(0);
+        filter: none;
+      }
+
+      .pricelist-table tbody tr {
+        border-left: 3px solid transparent;
+        transition: background-color 0.2s ease, border-left-color 0.2s ease;
+      }
+
+      .pricelist-table tbody tr:hover {
+        background-color: #f6f9e8 !important;
+        border-left-color: #c4de00;
+      }
+
+      @media print {
+        .footer {
+          display: block;
+          margin-top: 28px;
+          padding: 18px 0 0;
+          border-top: 2px solid #c4de00;
+          background: #fff;
+          box-shadow: none;
+          color: #8a98a3;
+        }
+
+        .footer-content {
+          display: grid;
+          grid-template-columns: minmax(140px, 1fr) minmax(0, 3fr);
+          align-items: start;
+          gap: 32px;
+          width: 100%;
+          max-width: none;
+        }
+
+        .footer-left {
+          gap: 4px;
+        }
+
+        .footer-right {
+          text-align: right;
+        }
+
+        .footer-right p {
+          white-space: nowrap;
+          font-size: 9px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="site-header-content">
+        <a href="index.html" class="site-logo" aria-label="Ceník náhradních vozidel">
+          <img src="Loga/Logo+negativni+RGB.png" alt="Direct pojišťovna">
+        </a>
+        <nav class="site-nav" aria-label="Hlavní navigace">
+          <a href="vypocet.html">Výpočet půjčovného</a>
+          <a href="index.html">Ceník vozidel</a>
+          <a href="pdr-kalkulacka.html" class="active">PDR kalkulačka</a>
+        </nav>
+      </div>
+    </header>
+    <main>
+      <div class="print-header" aria-hidden="true">
+        <img src="Loga/Logo+pozitivní+RGB.png" alt="">
+        <p class="print-header-title">Výsledek PDR kalkulace</p>
+      </div>
+      <h1 class="page-title">PDR kalkulačka</h1>
+      <p class="subtitle">Výpočet opravy důlků podle ceníku. Každý díl se počítá zvlášť.</p>
+
+      <input class="tab-radio" type="radio" name="main-tab" id="tab-calculator" checked>
+      <input class="tab-radio" type="radio" name="main-tab" id="tab-pricelist">
+      <nav class="tabs" aria-label="Sekce">
+        <label class="tab" for="tab-calculator">Kalkulačka</label>
+        <label class="tab" for="tab-pricelist">Ceník</label>
+      </nav>
+
+      <div id="panel-calculator" class="tab-panel">
+        <form id="pdr-form">
+          <input type="radio" name="diameter" value="20" checked hidden>
+          <section class="pdr-workspace" aria-label="Zadání poškození">
+            <div class="pdr-parts-panel">
+              <table class="pdr-parts-table">
+                <thead>
+                  <tr><th>Díl</th><th>Počet</th><th>Rozměr</th><th>Alu</th><th>Lak</th></tr>
+                </thead>
+                <tbody id="parts-list"></tbody>
+              </table>
+              <div class="actions">
+                <button type="submit" class="btn btn-primary">Spočítat</button>
+                <button type="button" id="reset-form" class="btn btn-secondary">Reset</button>
+              </div>
+            </div>
+            <div class="pdr-car-panel" aria-label="Vizualizace vozidla">
+              <div id="pdr-3d-stage" class="pdr-3d-stage" role="img" aria-label="Interaktivní 3D model vozidla">
+                <img id="pdr-reference-image" class="pdr-reference-image" src="images/pdr/Střecha.png" alt="Vozidlo s vyznačeným dílem">
+                <div id="pdr-model-status" class="pdr-model-status">Pohled podle vybraného dílu</div>
+                <div id="pdr-focus-indicator" class="pdr-focus-indicator" aria-live="polite"></div>
+              </div>
+            </div>
+            <aside class="pdr-help-panel">
+              <p class="pdr-help-title">Nápověda</p>
+              <h3>Počet</h3>
+              <p>Zadejte celkový počet všech poškození na konkrétním dílu.</p>
+              <h3>Rozměr</h3>
+              <p>Vyberte nejčastější rozměr důlků. Pokud se rozměry liší, použijte samostatný řádek.</p>
+              <h3>Alu</h3>
+              <p>Označte, pokud je díl z hliníku. Tato volba je připravena pro rozšíření ceníku.</p>
+              <h3>Lak</h3>
+              <p>Označte, pokud je lak výrazně poškozený.</p>
+            </aside>
+          </section>
+        </form>
+
+        <section class="card result-card">
+          <div class="result-heading">
+            <div>
+              <p class="result-kicker">Výpočet opravy</p>
+              <h2>Výsledek</h2>
+              <p class="result-description">Přehled cen jednotlivých dílů a celkové částky.</p>
+            </div>
+          </div>
+          <p id="result-empty" class="empty result-empty">Zadejte alespoň jeden díl s počtem důlků.</p>
+          <div id="result-content" hidden>
+            <p id="print-meta" class="print-only"></p>
+            <div class="result-table-wrap">
+              <table class="result-table">
+                <thead>
+                  <tr>
+                    <th>Díl</th>
+                    <th>Počet</th>
+                    <th>Průměr</th>
+                    <th>Pásmo</th>
+                    <th>Ceníková skupina</th>
+                    <th>Úprava</th>
+                    <th class="num">Cena dílu</th>
+                  </tr>
+                </thead>
+                <tbody id="result-rows"></tbody>
+              </table>
+            </div>
+            <div class="totals">
+              <div><span>Součet před materiálem</span><strong id="sum-before-material"></strong></div>
+              <div><span>Drobný materiál 2 %</span><strong id="sum-material"></strong></div>
+              <div><span id="dismantling-label">Demontážní práce</span><strong id="sum-dismantling"></strong></div>
+              <div><span>Celkem bez DPH</span><strong id="sum-without-vat"></strong></div>
+              <div><span>DPH 21 %</span><strong id="sum-vat"></strong></div>
+              <div class="total"><span>Celkem s DPH</span><span id="sum-with-vat"></span></div>
+            </div>
+            <div class="actions no-print">
+              <button type="button" id="print-result" class="btn btn-secondary">Tisk / PDF</button>
+            </div>
+          </div>
+          <div class="note calculation-note">
+            <p class="calculation-note-title">Jak se cena počítá</p>
+            <ul class="calculation-note-list">
+              <li><strong>Alu díl:</strong> příplatek 20 %.</li>
+              <li><strong>PDR pro lakování:</strong> sleva 50 % z ceny dílu.</li>
+              <li><strong>Režijní materiál:</strong> 2 % z ceny opravy.</li>
+              <li><strong>Demontážní práce:</strong> 2 500 Kč do ceny opravy 50 000 Kč bez DPH, nad tuto částku 3 000 Kč.</li>
+            </ul>
+          </div>
+        </section>
+      </div>
+
+      <div id="panel-pricelist" class="tab-panel">
+        <section class="card">
+          <h2>Ceník</h2>
+          <p class="empty pricelist-intro">Ceny bez DPH a bez 2 % drobného materiálu. Přepněte průměr a zkontrolujte, jestli sedí s papírovým ceníkem.</p>
+          <input class="tab-radio" type="radio" name="pricelist-diameter" id="pl-20" value="20" checked>
+          <input class="tab-radio" type="radio" name="pricelist-diameter" id="pl-30" value="30">
+          <input class="tab-radio" type="radio" name="pricelist-diameter" id="pl-40" value="40">
+          <div class="diameter-options pricelist-diameters">
+            <label for="pl-20"><span>20 mm</span></label>
+            <label for="pl-30"><span>30 mm</span></label>
+            <label for="pl-40"><span>40 mm</span></label>
+          </div>
+          <div class="table-wrap">
+            <div class="pricelist-block" data-d="20">
+              <table class="pricelist-table">
+              <thead>
+                <tr>
+                  <th>Počet důlků</th>
+                  <th class="num">Kapota / střecha</th>
+                  <th class="num">Blatník / dveře</th>
+                  <th class="num">Boční rám / kufr</th>
+                </tr>
+              </thead>
+                <tbody>
+                <tr><td>01</td><td class="num">598,00 Kč</td><td class="num">677,00 Kč</td><td class="num">795,00 Kč</td></tr>
+                <tr><td>02-03</td><td class="num">1 076,00 Kč</td><td class="num">1 219,00 Kč</td><td class="num">1 431,00 Kč</td></tr>
+                <tr><td>04-06</td><td class="num">1 614,00 Kč</td><td class="num">1 829,00 Kč</td><td class="num">2 147,00 Kč</td></tr>
+                <tr><td>07-10</td><td class="num">2 373,00 Kč</td><td class="num">2 688,00 Kč</td><td class="num">3 156,00 Kč</td></tr>
+                <tr><td>11-15</td><td class="num">2 705,00 Kč</td><td class="num">3 065,00 Kč</td><td class="num">3 598,00 Kč</td></tr>
+                <tr><td>16-20</td><td class="num">3 057,00 Kč</td><td class="num">3 463,00 Kč</td><td class="num">4 066,00 Kč</td></tr>
+                <tr><td>21-25</td><td class="num">3 332,00 Kč</td><td class="num">3 775,00 Kč</td><td class="num">4 432,00 Kč</td></tr>
+                <tr><td>26-30</td><td class="num">3 632,00 Kč</td><td class="num">4 115,00 Kč</td><td class="num">4 831,00 Kč</td></tr>
+                <tr><td>31-40</td><td class="num">4 068,00 Kč</td><td class="num">4 609,00 Kč</td><td class="num">5 410,00 Kč</td></tr>
+                <tr><td>41-50</td><td class="num">4 556,00 Kč</td><td class="num">5 162,00 Kč</td><td class="num">6 060,00 Kč</td></tr>
+                <tr><td>51-60</td><td class="num">5 467,00 Kč</td><td class="num">6 194,00 Kč</td><td class="num">7 272,00 Kč</td></tr>
+                <tr><td>61-80</td><td class="num">6 560,00 Kč</td><td class="num">7 433,00 Kč</td><td class="num">8 726,00 Kč</td></tr>
+                <tr><td>81-100</td><td class="num">7 652,00 Kč</td><td class="num">8 669,00 Kč</td><td class="num">10 178,00 Kč</td></tr>
+                <tr><td>101-120</td><td class="num">8 358,00 Kč</td><td class="num">9 470,00 Kč</td><td class="num">11 118,00 Kč</td></tr>
+                <tr><td>121-140</td><td class="num">8 684,00 Kč</td><td class="num">9 839,00 Kč</td><td class="num">11 551,00 Kč</td></tr>
+                <tr><td>141-160</td><td class="num">9 639,00 Kč</td><td class="num">10 922,00 Kč</td><td class="num">12 822,00 Kč</td></tr>
+                <tr><td>161-180</td><td class="num">9 983,00 Kč</td><td class="num">11 311,00 Kč</td><td class="num">13 279,00 Kč</td></tr>
+                <tr><td>181-200</td><td class="num">10 545,00 Kč</td><td class="num">11 947,00 Kč</td><td class="num">14 026,00 Kč</td></tr>
+                <tr><td>201-220</td><td class="num">12 073,00 Kč</td><td class="num">13 678,00 Kč</td><td class="num">16 058,00 Kč</td></tr>
+                <tr><td>221-240</td><td class="num">12 578,00 Kč</td><td class="num">14 251,00 Kč</td><td class="num">16 731,00 Kč</td></tr>
+                <tr><td>241-260</td><td class="num">13 278,00 Kč</td><td class="num">15 044,00 Kč</td><td class="num">17 662,00 Kč</td></tr>
+                <tr><td>261-280</td><td class="num">13 825,00 Kč</td><td class="num">15 663,00 Kč</td><td class="num">18 389,00 Kč</td></tr>
+                <tr><td>281-300</td><td class="num">14 370,00 Kč</td><td class="num">16 281,00 Kč</td><td class="num">19 114,00 Kč</td></tr>
+                <tr><td>301-320</td><td class="num">14 723,00 Kč</td><td class="num">16 682,00 Kč</td><td class="num">19 584,00 Kč</td></tr>
+                <tr><td>321-340</td><td class="num">14 887,00 Kč</td><td class="num">16 867,00 Kč</td><td class="num">19 801,00 Kč</td></tr>
+                <tr><td>341-360</td><td class="num">15 364,00 Kč</td><td class="num">17 408,00 Kč</td><td class="num">20 437,00 Kč</td></tr>
+                <tr><td>361-380</td><td class="num">15 536,00 Kč</td><td class="num">17 602,00 Kč</td><td class="num">20 665,00 Kč</td></tr>
+                <tr><td>381-400</td><td class="num">15 817,00 Kč</td><td class="num">17 920,00 Kč</td><td class="num">21 038,00 Kč</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="pricelist-block" data-d="30">
+              <table class="pricelist-table">
+              <thead>
+                <tr>
+                  <th>Počet důlků</th>
+                  <th class="num">Kapota / střecha</th>
+                  <th class="num">Blatník / dveře</th>
+                  <th class="num">Boční rám / kufr</th>
+                </tr>
+              </thead>
+                <tbody>
+                <tr><td>01</td><td class="num">642,00 Kč</td><td class="num">728,00 Kč</td><td class="num">854,00 Kč</td></tr>
+                <tr><td>02-03</td><td class="num">1 156,00 Kč</td><td class="num">1 310,00 Kč</td><td class="num">1 538,00 Kč</td></tr>
+                <tr><td>04-06</td><td class="num">1 734,00 Kč</td><td class="num">1 965,00 Kč</td><td class="num">2 307,00 Kč</td></tr>
+                <tr><td>07-10</td><td class="num">2 550,00 Kč</td><td class="num">2 889,00 Kč</td><td class="num">3 391,00 Kč</td></tr>
+                <tr><td>11-15</td><td class="num">2 907,00 Kč</td><td class="num">3 293,00 Kč</td><td class="num">3 866,00 Kč</td></tr>
+                <tr><td>16-20</td><td class="num">3 284,00 Kč</td><td class="num">3 721,00 Kč</td><td class="num">4 369,00 Kč</td></tr>
+                <tr><td>21-25</td><td class="num">3 580,00 Kč</td><td class="num">4 056,00 Kč</td><td class="num">4 762,00 Kč</td></tr>
+                <tr><td>26-30</td><td class="num">3 902,00 Kč</td><td class="num">4 421,00 Kč</td><td class="num">5 191,00 Kč</td></tr>
+                <tr><td>31-40</td><td class="num">4 371,00 Kč</td><td class="num">4 952,00 Kč</td><td class="num">5 813,00 Kč</td></tr>
+                <tr><td>41-50</td><td class="num">4 895,00 Kč</td><td class="num">5 546,00 Kč</td><td class="num">6 511,00 Kč</td></tr>
+                <tr><td>51-60</td><td class="num">5 874,00 Kč</td><td class="num">6 655,00 Kč</td><td class="num">7 813,00 Kč</td></tr>
+                <tr><td>61-80</td><td class="num">7 049,00 Kč</td><td class="num">7 986,00 Kč</td><td class="num">9 376,00 Kč</td></tr>
+                <tr><td>81-100</td><td class="num">8 222,00 Kč</td><td class="num">9 315,00 Kč</td><td class="num">10 936,00 Kč</td></tr>
+                <tr><td>101-120</td><td class="num">8 981,00 Kč</td><td class="num">10 176,00 Kč</td><td class="num">11 946,00 Kč</td></tr>
+                <tr><td>121-140</td><td class="num">9 331,00 Kč</td><td class="num">10 572,00 Kč</td><td class="num">12 412,00 Kč</td></tr>
+                <tr><td>141-160</td><td class="num">10 358,00 Kč</td><td class="num">11 735,00 Kč</td><td class="num">13 777,00 Kč</td></tr>
+                <tr><td>161-180</td><td class="num">10 727,00 Kč</td><td class="num">12 154,00 Kč</td><td class="num">14 268,00 Kč</td></tr>
+                <tr><td>181-200</td><td class="num">11 331,00 Kč</td><td class="num">12 838,00 Kč</td><td class="num">15 071,00 Kč</td></tr>
+                <tr><td>201-220</td><td class="num">12 972,00 Kč</td><td class="num">14 697,00 Kč</td><td class="num">17 255,00 Kč</td></tr>
+                <tr><td>221-240</td><td class="num">13 515,00 Kč</td><td class="num">15 313,00 Kč</td><td class="num">17 978,00 Kč</td></tr>
+                <tr><td>241-260</td><td class="num">14 267,00 Kč</td><td class="num">16 165,00 Kč</td><td class="num">18 977,00 Kč</td></tr>
+                <tr><td>261-280</td><td class="num">14 855,00 Kč</td><td class="num">16 830,00 Kč</td><td class="num">19 759,00 Kč</td></tr>
+                <tr><td>281-300</td><td class="num">15 441,00 Kč</td><td class="num">17 494,00 Kč</td><td class="num">20 538,00 Kč</td></tr>
+                <tr><td>301-320</td><td class="num">15 820,00 Kč</td><td class="num">17 924,00 Kč</td><td class="num">21 043,00 Kč</td></tr>
+                <tr><td>321-340</td><td class="num">15 996,00 Kč</td><td class="num">18 123,00 Kč</td><td class="num">21 276,00 Kč</td></tr>
+                <tr><td>341-360</td><td class="num">16 509,00 Kč</td><td class="num">18 705,00 Kč</td><td class="num">21 959,00 Kč</td></tr>
+                <tr><td>361-380</td><td class="num">16 693,00 Kč</td><td class="num">18 913,00 Kč</td><td class="num">22 204,00 Kč</td></tr>
+                <tr><td>381-400</td><td class="num">16 995,00 Kč</td><td class="num">19 255,00 Kč</td><td class="num">22 606,00 Kč</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="pricelist-block" data-d="40">
+              <table class="pricelist-table">
+              <thead>
+                <tr>
+                  <th>Počet důlků</th>
+                  <th class="num">Kapota / střecha</th>
+                  <th class="num">Blatník / dveře</th>
+                  <th class="num">Boční rám / kufr</th>
+                </tr>
+              </thead>
+                <tbody>
+                <tr><td>01</td><td class="num">742,00 Kč</td><td class="num">841,00 Kč</td><td class="num">987,00 Kč</td></tr>
+                <tr><td>02-03</td><td class="num">1 336,00 Kč</td><td class="num">1 513,00 Kč</td><td class="num">1 776,00 Kč</td></tr>
+                <tr><td>04-06</td><td class="num">2 003,00 Kč</td><td class="num">2 270,00 Kč</td><td class="num">2 665,00 Kč</td></tr>
+                <tr><td>07-10</td><td class="num">2 945,00 Kč</td><td class="num">3 337,00 Kč</td><td class="num">3 917,00 Kč</td></tr>
+                <tr><td>11-15</td><td class="num">3 357,00 Kč</td><td class="num">3 804,00 Kč</td><td class="num">4 465,00 Kč</td></tr>
+                <tr><td>16-20</td><td class="num">3 794,00 Kč</td><td class="num">4 298,00 Kč</td><td class="num">5 046,00 Kč</td></tr>
+                <tr><td>21-25</td><td class="num">4 135,00 Kč</td><td class="num">4 685,00 Kč</td><td class="num">5 500,00 Kč</td></tr>
+                <tr><td>26-30</td><td class="num">4 507,00 Kč</td><td class="num">5 107,00 Kč</td><td class="num">5 995,00 Kč</td></tr>
+                <tr><td>31-40</td><td class="num">5 048,00 Kč</td><td class="num">5 719,00 Kč</td><td class="num">6 715,00 Kč</td></tr>
+                <tr><td>41-50</td><td class="num">5 654,00 Kč</td><td class="num">6 406,00 Kč</td><td class="num">7 520,00 Kč</td></tr>
+                <tr><td>51-60</td><td class="num">6 785,00 Kč</td><td class="num">7 687,00 Kč</td><td class="num">9 024,00 Kč</td></tr>
+                <tr><td>61-80</td><td class="num">8 141,00 Kč</td><td class="num">9 224,00 Kč</td><td class="num">10 829,00 Kč</td></tr>
+                <tr><td>81-100</td><td class="num">9 496,00 Kč</td><td class="num">10 759,00 Kč</td><td class="num">12 631,00 Kč</td></tr>
+                <tr><td>101-120</td><td class="num">10 373,00 Kč</td><td class="num">11 753,00 Kč</td><td class="num">13 798,00 Kč</td></tr>
+                <tr><td>121-140</td><td class="num">10 778,00 Kč</td><td class="num">12 211,00 Kč</td><td class="num">14 336,00 Kč</td></tr>
+                <tr><td>141-160</td><td class="num">11 963,00 Kč</td><td class="num">13 554,00 Kč</td><td class="num">15 913,00 Kč</td></tr>
+                <tr><td>161-180</td><td class="num">12 390,00 Kč</td><td class="num">14 037,00 Kč</td><td class="num">16 480,00 Kč</td></tr>
+                <tr><td>181-200</td><td class="num">13 087,00 Kč</td><td class="num">14 827,00 Kč</td><td class="num">17 407,00 Kč</td></tr>
+                <tr><td>201-220</td><td class="num">14 983,00 Kč</td><td class="num">16 975,00 Kč</td><td class="num">19 929,00 Kč</td></tr>
+                <tr><td>221-240</td><td class="num">15 610,00 Kč</td><td class="num">17 687,00 Kč</td><td class="num">20 764,00 Kč</td></tr>
+                <tr><td>241-260</td><td class="num">16 479,00 Kč</td><td class="num">18 670,00 Kč</td><td class="num">21 919,00 Kč</td></tr>
+                <tr><td>261-280</td><td class="num">17 157,00 Kč</td><td class="num">19 439,00 Kč</td><td class="num">22 821,00 Kč</td></tr>
+                <tr><td>281-300</td><td class="num">17 834,00 Kč</td><td class="num">20 206,00 Kč</td><td class="num">23 722,00 Kč</td></tr>
+                <tr><td>301-320</td><td class="num">18 272,00 Kč</td><td class="num">20 703,00 Kč</td><td class="num">24 305,00 Kč</td></tr>
+                <tr><td>321-340</td><td class="num">18 475,00 Kč</td><td class="num">20 932,00 Kč</td><td class="num">24 574,00 Kč</td></tr>
+                <tr><td>341-360</td><td class="num">19 068,00 Kč</td><td class="num">21 604,00 Kč</td><td class="num">25 363,00 Kč</td></tr>
+                <tr><td>361-380</td><td class="num">19 281,00 Kč</td><td class="num">21 845,00 Kč</td><td class="num">25 646,00 Kč</td></tr>
+                <tr><td>381-400</td><td class="num">19 629,00 Kč</td><td class="num">22 240,00 Kč</td><td class="num">26 110,00 Kč</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer class="footer">
+      <div class="footer-content">
+        <div class="footer-left">
+          <a href="https://www.direct.cz" target="_blank" rel="noopener noreferrer">direct.cz</a>
+          <span>221 221 221</span>
+        </div>
+        <div class="footer-right">
+          <p>Direct pojišťovna, a.s., se sídlem Nové sady 996/25, Brno, 602 00, IČO: 250 739 58, DIČ: CZ 699 004 195,<br>
+          zapsaná v obchodním rejstříku krajského soudu v Brně, oddíl B, vložka 3365.</p>
+        </div>
+      </div>
+    </footer>
+    <script src="pdr-kalkulacka.js"></script>
+    <script src="pdr-reference.js"></script>
+  </body>
+</html>

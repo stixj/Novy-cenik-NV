@@ -323,12 +323,7 @@
       }
 
       .result-kicker {
-        margin: 0 0 4px;
-        color: #6b8510;
-        font-size: 0.72rem;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
+        display: none;
       }
 
       .result-description {
@@ -2271,15 +2266,16 @@
 
         .footer-content {
           display: grid;
-          grid-template-columns: minmax(140px, 1fr) minmax(0, 3fr);
+          grid-template-columns: minmax(120px, 0.7fr) minmax(0, 4fr);
           align-items: start;
-          gap: 32px;
+          gap: 24px;
           width: 100%;
           max-width: none;
         }
 
         .footer-left {
           gap: 4px;
+          font-size: 10px;
         }
 
         .footer-right {
@@ -2288,7 +2284,8 @@
 
         .footer-right p {
           white-space: nowrap;
-          font-size: 9px;
+          font-size: 10px;
+          line-height: 1.4;
         }
       }
     </style>
@@ -2361,8 +2358,7 @@
         <section class="card result-card">
           <div class="result-heading">
             <div>
-              <p class="result-kicker">Výpočet opravy</p>
-              <h2>Výsledek</h2>
+              <h2>Přehled opravy</h2>
               <p class="result-description">Přehled cen jednotlivých dílů a celkové částky.</p>
             </div>
           </div>
@@ -2376,10 +2372,8 @@
                     <th>Díl</th>
                     <th>Počet</th>
                     <th>Průměr</th>
-                    <th>Pásmo</th>
-                    <th>Ceníková skupina</th>
-                    <th>Úprava</th>
-                    <th class="num">Cena dílu</th>
+                    <th id="adjustment-header">Úprava</th>
+                    <th class="num">Oprava PDR bez DPH</th>
                   </tr>
                 </thead>
                 <tbody id="result-rows"></tbody>

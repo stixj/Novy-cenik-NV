@@ -724,21 +724,26 @@ function renderResult() {
           <td>${detail.partName}</td>
           <td>${detail.count}</td>
           <td>${detail.diameter} mm</td>
-          <td>${detail.priceRange}</td>
-          <td>${PART_TYPE_LABELS[detail.partType]}</td>
-          <td>${detail.adjustmentLabel}</td>
+          <td class="adjustment-cell">${
+            detail.adjustmentLabel === "Bez úpravy" ? "" : detail.adjustmentLabel
+          }</td>
           <td class="num">${formatCzk(detail.partPrice)}</td>
         </tr>
       `,
     )
     .join("");
 
+  const hasAdjustments = prices.calculationDetails.some(
+    (detail) => detail.adjustmentLabel !== "Bez úpravy",
+  );
+  document.getElementById("adjustment-header").hidden = !hasAdjustments;
+  tbody.querySelectorAll(".adjustment-cell").forEach((cell) => {
+    cell.hidden = !hasAdjustments;
+  });
+
   document.getElementById("sum-before-material").textContent = formatCzk(prices.totalBeforeMaterial);
   document.getElementById("sum-material").textContent = formatCzk(prices.materialAddition);
-  document.getElementById("dismantling-label").textContent =
-    prices.repairWithoutVat <= 50000
-      ? "Demontážní práce (z ceny opravy bez DPH do 50 000 Kč)"
-      : "Demontážní práce (z ceny opravy bez DPH nad 50 000 Kč)";
+  document.getElementById("dismantling-label").textContent = "Demontáž/montáž";
   document.getElementById("sum-dismantling").textContent = formatCzk(prices.dismantling);
   document.getElementById("sum-without-vat").textContent = formatCzk(prices.priceWithoutVat);
   document.getElementById("sum-vat").textContent = formatCzk(prices.vatAmount);
